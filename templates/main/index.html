@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<link href="{% static 'main/css/enroll.css' %}" rel="stylesheet">
 {% block title %}
     Расписание
 {% endblock %}
 
 {% block content %}
-    {% include 'main/timetable.html' %}
+    {% include 'inc/index/_timetable.html' %}
+    {% include 'inc/index/_enroll.html' %}
 {% endblock %}

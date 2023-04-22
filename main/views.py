@@ -19,3 +19,7 @@ def index(request):
 def contacts(request):
     context = CONTACTS
     return render(request, 'main/contacts.html', context)
+
+
+def enroll(request):
+    return render(request, 'main/enroll.html')
