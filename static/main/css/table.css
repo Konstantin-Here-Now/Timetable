@@ -1,0 +1,12 @@
+.timetable {
+    font: 18pt times-new-roman;
+    margin: auto;
+    text-align: center;
+    border: 2px solid grey;
+    border-collapse: collapse
+}
+
+td {
+    padding: 5px 50px;
+    border: 1px solid grey;
+}

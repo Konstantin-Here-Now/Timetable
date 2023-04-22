@@ -1,0 +1,14 @@
+{% load static %}
+
+<link href="{% static 'main/css/table.css' %}" rel="stylesheet">
+<table class="timetable">
+    <tbody>
+    {% for day in days_dataset.values %}
+        <tr>
+            <td>{{ day.date }}</td>
+            <td>{{ day.rus }}</td>
+            <td>{{ day.available_time }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
