@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Регистрация
+{% endblock %}
+
+{% block content %}
+    <p style="text-align: center; font-size: 20px">Указывайте реальные имя, фамилию и почту. На почту будут приходить
+        уведомления о подтверждении занятия. Аккаунты с неизвестными ФИО будут удаляться.</p>
+    <div class="container" style="width: 18vw; text-align: center">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}<br>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                </p>
+            {% endfor %}
+            <input type="submit" class="btn btn-primary" value="Зарегистироваться">
+        </form>
+    </div>
+{% endblock %}
+
+</body>
+</html>

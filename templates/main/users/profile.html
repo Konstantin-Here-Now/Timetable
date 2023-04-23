@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Профиль
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h1>{{ user.first_name }} {{ user.last_name }}1</h1>
+            <h3>{{ user.username }}</h3>
+            <h3>{{ user.email }}</h3>
+
+            <div style="text-align: center;margin-top: 30px;">
+{#                <a class="btn btn-primary">Изменить данные профиля</a>#}
+                <a href="{% url 'logout' %}" class="btn btn-primary">Выйти из профиля</a>
+            </div>
+        </div>
+
+        <br><br><br>
+
+        <div class="row">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card border-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Занятие</h5>
+                            <p>Время занятия</p>
+                            <p>Описание занятия: Клара у Карла украла кораллы, а Карл у Клары украл кларнет.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><br><br>
+
+{#        <div style="text-align: center">#}
+{#            <a class="btn btn-danger" style="margin-top: 10px">Удалить профиль</a>#}
+{#        </div>#}
+    </div>
+{% endblock %}
