@@ -1,9 +1,15 @@
 import json
 
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import NameForm, UserRegistrationForm, UserLoginForm
+from .models import Lesson
+from .forms import LessonForm, UserRegistrationForm, UserLoginForm
+
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 
 CONTACTS = {
     'name': 'Иван Щербаков',
@@ -22,17 +28,6 @@ def index(request):
 def contacts(request):
     context = CONTACTS
     return render(request, 'main/contacts.html', context)
-
-
-def enroll(request):
-    return render(request, 'main/enroll.html')
-
-
-def get_name(request):
-    if request.method == 'POST':
-        form = NameForm(request.POST)
-        if form.is_valid():
-            return render(request, 'main/contacts.html')
 
 
 def user_register(request):
@@ -72,3 +67,19 @@ def user_logout(request):
 def profile(request):
     user = request.user
     return render(request, 'main/users/profile.html', context={'user': user})
+
+
+class LessonCreateView(CreateView):
+    model = Lesson
+    form_class = LessonForm
+    template_name = 'main/enroll.html'
+    context_object_name = 'form'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        form.instance.pupil = self.request.user
+        return super().form_valid(form)
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)

@@ -1,7 +1,23 @@
 {% extends 'base.html' %}
 
-<form action="/your-name/" method="post">
-    <label for="your_name">Your name: </label>
-    <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
-    <input type="submit" value="OK">
-</form>
+{% block title %}
+    Запись на занятие
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="width: 18vw; text-align: center">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}<br>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                </p>
+            {% endfor %}
+            <input type="submit" class="btn btn-primary" value="Записаться">
+        </form>
+    </div>
+{% endblock %}

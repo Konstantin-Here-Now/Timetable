@@ -1,15 +1,24 @@
 from django import forms
+from .models import Lesson
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 
-class NameForm(forms.Form):
-    your_name = forms.CharField(label='Your name', max_length=100)
+class LessonForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+        fields = ('date_lesson', 'time_lesson', 'desc')
+        widgets = {
+            'date_lesson': forms.TextInput(attrs={'class': 'form-input', 'type': 'date'}),
+            'time_lesson': forms.TimeInput(attrs={'class': 'form-input', 'type': 'time'}),
+            'desc': forms.Textarea(attrs={'class': 'form-input'}),
+        }
 
 
 class UserRegistrationForm(UserCreationForm):
-    username = forms.CharField(min_length=3, max_length=30, label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(min_length=3, max_length=30, label='Логин',
+                               widget=forms.TextInput(attrs={'class': 'form-input'}))
     first_name = forms.CharField(label='Имя', widget=forms.TextInput(attrs={'class': 'form-input'}))
     last_name = forms.CharField(label='Фамилия', widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.EmailField(label='Электронная почта', widget=forms.EmailInput(attrs={'class': 'form-input'}))

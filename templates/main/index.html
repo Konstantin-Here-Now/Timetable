@@ -8,5 +8,7 @@
 
 {% block content %}
     {% include 'inc/index/_timetable.html' %}
-    {% include 'inc/index/_enroll.html' %}
+    {% if not request.user.is_anonymous %}
+        {% include 'inc/index/_enroll.html' %}
+    {% endif %}
 {% endblock %}
