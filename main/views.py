@@ -11,6 +11,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 
+from .dates_and_time import TODAY
+
 CONTACTS = {
     'name': 'Иван Щербаков',
     'phone': '+79154779740',
@@ -78,8 +80,21 @@ class LessonCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.pupil = self.request.user
+        print(form.instance.time_lesson)
         return super().form_valid(form)
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+
+class LessonListView(ListView):
+    model = Lesson
+    template_name = 'main/lessons_list.html'
+    context_object_name = 'lessons'
+
+    paginate_by = 5
+
+    def get_queryset(self, ):
+        # return Lesson.objects.filter(approved=False).order_by('-date_lesson')
+        return Lesson.objects.order_by('-date_lesson')

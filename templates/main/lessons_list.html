@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Все занятия
+{% endblock %}
+
+{% block content %}
+    <div style="text-align:center">
+        <br><br>
+        <div>
+            {% for lesson in page_obj.object_list %}
+                <div class="card"
+                     style="width: 18rem;height:30rem;display:inline-block;vertical-align:top;background-color: antiquewhite;">
+                    <div style="vertical-align: top;">
+                        <div class="card-body">
+                            <h3 class="card-title" style="margin-bottom:50px;">{{ lesson.date_lesson }}</h3>
+                            <h4 class="card-text" style="margin-top:30px;">{{ lesson.time_lesson }}</h4>
+                            <h5 class="card-text" style="margin-top:30px;">{{ lesson.pupil }}</h5>
+                            <p class="card-text" style="margin-top:30px;">{{ lesson.desc }}</p>
+                        </div>
+                        {#                        <a class="btn btn-primary" href="{{ lesson.get_absolute_url }}" style="margin-top:50px;">Подробнее</a>#}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+            <div class="container" style="padding: 10px;margin-top: 30px">
+                <div class="row align-items-center">
+                    <nav aria-label="Page navigation example" class="nav justify-content-center">
+                        <ul class="pagination" style="margin: auto">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for page in page_obj.paginator.page_range %}
+                                {% if page_obj.number == page %}
+                                    <li class="page-item active" aria-current="page">
+                                        <a class="page-link" href="#">{{ page }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

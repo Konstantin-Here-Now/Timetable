@@ -1,18 +1,8 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+from calendar import monthrange
 
-AVAILABLE_TIME = {'Monday': '17:00 - 19:00',
-                  'Tuesday': '19:00 - 23:00',
-                  'Wednesday': '---',
-                  'Thursday': '17:00 - 23:00',
-                  'Friday': '---',
-                  'Saturday': '09:00 - 11:00, 14:00 - 23:00',
-                  'Sunday': '---'}
-
-
-class TimeRangeNotInAvailableTime(Exception):
-    def __str__(self):
-        return "Временной интервал не доступен среди свободного времени."
+TODAY = datetime.today()
 
 
 def min_to_real_time(minutes: int) -> str:
@@ -68,7 +58,7 @@ def clearing_nulls_in_available_time(at_time: list):
 
 def update_data():
     set_dates()
-    pass
+    update_today_time_to_default()
 
 
 def set_general_available_time():
@@ -83,25 +73,47 @@ def set_general_available_time():
     print('<<Setting complete>>')
 
 
+def update_today_time_to_default():
+    print('<<Updating today time>>')
+    with open('../main/dates_and_time.json', 'r+', encoding='UTF-8') as dates_f, \
+            open('../main/available_time.json', 'r', encoding='UTF-8') as at_f:  # at_f = available time file
+        days_data = json.loads(dates_f.read())
+        at_data = json.loads(at_f.read())
+        today_eng = TODAY.strftime('%A')
+        days_data[today_eng]['available_time'] = at_data[today_eng]
+        rewrite_json_file(days_data, dates_f)
+    print('<<Update complete>>')
+
+
 def set_dates():
     print('<<Setting dates>>')
     with open('../main/dates_and_time.json', 'r+', encoding='UTF-8') as dates_f:
         days_data = json.loads(dates_f.read())
-        today_eng = datetime.today().strftime('%A')
-        today_date = list(map(int, datetime.today().strftime("%d.%m").split('.')))
+        tomorrow = TODAY + timedelta(days=1)
+        tomorrow_eng = tomorrow.strftime('%A')
+        tomorrow_date = list(map(int, tomorrow.strftime("%d.%m").split('.')))
         days = tuple(days_data.keys())
         for index, day in enumerate(days):
-            diff = days.index(today_eng) - index
+            diff = days.index(tomorrow_eng) - index
             if diff > 0:
                 diff -= 7
-            day_date = str(today_date[0] - diff)
-            month_date = str(today_date[1]) if today_date[1] > 9 else '0' + str(today_date[1])
+            day_date = str(tomorrow_date[0] - diff)
+
+            # check if days_date exceeds month's number of days
+            today_year_month = list(map(int, TODAY.strftime("%Y-%m").split('-')))
+            number_of_days_in_month = monthrange(*today_year_month)[1]
+            if int(day_date) > number_of_days_in_month:
+                day_date = str(int(day_date) - number_of_days_in_month)
+
+            if int(day_date) < 10:
+                day_date = '0' + day_date
+            month_date = str(tomorrow_date[1]) if tomorrow_date[1] > 9 else '0' + str(tomorrow_date[1])
             days_data[day]['date'] = '.'.join((day_date, month_date))
         rewrite_json_file(days_data, dates_f)
     print('<<Setting complete>>')
 
 
-def change_time_inverval(time_range: str, day: str):
+def change_time_interval(time_range: str, day: str):
     print(f'<<Setting new time interval for {day}...>>')
     with open('../main/dates_and_time.json', 'r+', encoding='UTF-8') as dates_f:
         days_data = json.loads(dates_f.read())
@@ -115,7 +127,7 @@ def change_time_inverval(time_range: str, day: str):
 
 def insert_time_range(time_range: str, at_time: list) -> list:
     if at_time == [(0,)]:
-        raise TimeRangeNotInAvailableTime
+        print(f'---{time_range} ignored. No available time---')
     time_range = time_range_to_min(time_range)
     for index, time_interval in enumerate(at_time):
         if (time_interval[0] <= time_range[0]) and (time_interval[1] >= time_range[1]):
@@ -127,7 +139,7 @@ def insert_time_range(time_range: str, at_time: list) -> list:
                 at_time = at_time[:index] + [new_at[0], new_at[1]] + at_time[index + 1:]
                 print('---Two new intervals---')
             return clearing_nulls_in_available_time(at_time)
-    raise TimeRangeNotInAvailableTime
+    print(f'---{time_range} ignored. It exceeds available time---')
 
 
 def rewrite_json_file(data, file):
@@ -159,5 +171,6 @@ def get_available_time_in_min(day_at: str) -> list:
 
     return day_at
 
-
 # change_time_inverval('15:00 - 18:00', 'Saturday')
+
+# update_data()

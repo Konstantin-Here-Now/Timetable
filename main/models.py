@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Lesson(models.Model):
     date_lesson = models.DateField(blank=False, null=False, verbose_name='Дата занятия')
-    time_lesson = models.TimeField(blank=False, null=False, verbose_name='Время занятия')
+    time_lesson = models.TextField(blank=False, null=False, verbose_name='Время занятия')
     pupil = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     desc = models.TextField(blank=True, null=False, verbose_name='Описание')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания записи')

@@ -11,4 +11,6 @@ urlpatterns = [
     path('register/', user_register, name='register'),
     path('profile/', profile, name='profile'),
 
+    path('lessons_list/', LessonListView.as_view(), name='lessons_list'),
+
 ]

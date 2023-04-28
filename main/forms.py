@@ -1,4 +1,8 @@
+import re
+
 from django import forms
+from django.core.exceptions import ValidationError
+
 from .models import Lesson
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -11,9 +15,16 @@ class LessonForm(forms.ModelForm):
         fields = ('date_lesson', 'time_lesson', 'desc')
         widgets = {
             'date_lesson': forms.TextInput(attrs={'class': 'form-input', 'type': 'date'}),
-            'time_lesson': forms.TimeInput(attrs={'class': 'form-input', 'type': 'time'}),
-            'desc': forms.Textarea(attrs={'class': 'form-input'}),
+            'time_lesson': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '12:00 - 13:00'}),
+            'desc': forms.Textarea(
+                attrs={'class': 'form-input', 'placeholder': 'Предмет для занятий, дополнительные комментарии'}),
         }
+
+    def clean_time_lesson(self):
+        time_lesson = self.cleaned_data['time_lesson']
+        if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
+            raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
+        return time_lesson
 
 
 class UserRegistrationForm(UserCreationForm):
