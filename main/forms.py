@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 
-class LessonForm(forms.ModelForm):
+class LessonCreateForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = ('date_lesson', 'time_lesson', 'desc')
@@ -25,6 +25,15 @@ class LessonForm(forms.ModelForm):
         if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
             raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
         return time_lesson
+
+
+class LessonUpdateForm(LessonCreateForm):
+    def __init__(self, *args, **kwargs):
+        super(LessonCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta(LessonCreateForm.Meta):
+        fields = LessonCreateForm.Meta.fields + ('approved',)
+        widgets = LessonCreateForm.Meta.widgets
 
 
 class UserRegistrationForm(UserCreationForm):

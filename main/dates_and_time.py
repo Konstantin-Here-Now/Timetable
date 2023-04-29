@@ -1,8 +1,16 @@
 import json
-from datetime import datetime, timedelta
+import sqlite3
 from calendar import monthrange
+from datetime import datetime, timedelta
 
 TODAY = datetime.today()
+# print(TODAY.date())
+# conn = sqlite3.connect('../db.sqlite3')
+# cur = conn.cursor()
+# cur.execute(f"SELECT * from main_lesson where date_lesson >= {TODAY.date()};")
+# result = cur.fetchall()
+# print(result)
+# conn.close()
 
 
 def min_to_real_time(minutes: int) -> str:
