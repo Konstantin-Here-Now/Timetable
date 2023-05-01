@@ -11,7 +11,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 
-from .dates_and_time import TODAY
+from .dates_and_time import TODAY, update
 
 CONTACTS = {
     'name': 'Иван Щербаков',
@@ -107,5 +107,6 @@ class LessonUpdateView(UpdateView):
     context_object_name = 'form'
 
     def get_success_url(self):
+        update()
         return reverse_lazy('lessons_list')
 
