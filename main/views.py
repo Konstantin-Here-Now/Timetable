@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -7,18 +9,16 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Lesson
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
 
+from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 
 from .dates_and_time import TODAY, update
 
-CONTACTS = {
-    'name': 'Иван Щербаков',
-    'phone': '+79154779740',
-    'email': 'pochtynet@mail.ru',
-    'vk': 'https://vk.com/id315090966',
-}
+logger = logging.getLogger(__name__)
+
+CONTACTS = settings.CONTACTS
 
 
 def index(request):
@@ -38,7 +38,7 @@ def user_register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
-            print(f'{user.username} registered!')
+            logger.info(f'{user.username} registered!')
             user.save()
             # login(request, user)
             return redirect('index')
@@ -53,7 +53,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            print(f'{user.username} logs in!')
+            logger.info(f'{user.username} logs in!')
             return redirect('index')
     else:
         form = UserLoginForm()
@@ -61,7 +61,7 @@ def user_login(request):
 
 
 def user_logout(request):
-    print(f'{request.user.username} logs out!')
+    logger.info(f'{request.user.username} logs out!')
     logout(request)
     return redirect('index')
 
@@ -80,15 +80,10 @@ class LessonCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.pupil = self.request.user
-        print(form.instance.time_lesson)
         return super().form_valid(form)
 
-    @method_decorator(login_required())
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
-
-class LessonListView(ListView):
+class AllLessonListView(ListView):
     model = Lesson
     template_name = 'main/lessons_list.html'
     context_object_name = 'lessons'
@@ -99,6 +94,10 @@ class LessonListView(ListView):
     def get_queryset(self):
         return Lesson.objects.filter(date_lesson__gte=TODAY).order_by('-date_lesson')
 
+    @method_decorator(permission_required('main.view_lesson'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class LessonUpdateView(UpdateView):
     model = Lesson
@@ -106,7 +105,18 @@ class LessonUpdateView(UpdateView):
     template_name = 'main/lesson_update.html'
     context_object_name = 'form'
 
+    def form_valid(self, form):
+        pupil = form.instance.pupil
+        time_lesson = form.instance.time_lesson
+        date_lesson = form.instance.date_lesson
+        approved = 'APPROVED' if form.instance.approved is True else 'DISAPPROVED'
+        logger.info(f'<<{approved}>> {pupil} {time_lesson} {date_lesson}')
+        return super().form_valid(form)
+
     def get_success_url(self):
         update()
         return reverse_lazy('lessons_list')
 
+    @method_decorator(permission_required('main.change_lesson'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)

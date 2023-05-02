@@ -7,14 +7,11 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <h1>{{ user.first_name }} {{ user.last_name }}1</h1>
+            <h1>{{ user.first_name }} {{ user.last_name }}</h1>
             <h3>{{ user.username }}</h3>
             <h3>{{ user.email }}</h3>
 
-            <div style="text-align: center;margin-top: 30px;">
-{#                <a class="btn btn-primary">Изменить данные профиля</a>#}
-                <a href="{% url 'logout' %}" class="btn btn-primary">Выйти из профиля</a>
-            </div>
+
         </div>
 
         <br><br><br>
@@ -33,10 +30,15 @@
             </div>
         </div>
 
+
         <br><br><br>
 
-{#        <div style="text-align: center">#}
-{#            <a class="btn btn-danger" style="margin-top: 10px">Удалить профиль</a>#}
-{#        </div>#}
+        {#        <div style="text-align: center">#}
+        {#            <a class="btn btn-danger" style="margin-top: 10px">Удалить профиль</a>#}
+        {#        </div>#}
+        <div style="text-align: center;margin-top: 30px;">
+            {#                <a class="btn btn-primary">Изменить данные профиля</a>#}
+            <a href="{% url 'logout' %}" class="btn btn-primary">Выйти из профиля</a>
+        </div>
     </div>
 {% endblock %}

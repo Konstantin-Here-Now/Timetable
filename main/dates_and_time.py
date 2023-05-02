@@ -1,9 +1,12 @@
 import os
 import json
 import sqlite3
+import logging
 from calendar import monthrange
 from datetime import datetime, timedelta
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 TODAY = datetime.today()
 DATES_JSON_PATH = os.path.join(settings.BASE_DIR, r'main\dates_and_time.json')
@@ -39,21 +42,21 @@ def convert_min_into_str_time_ranges(day_at: list) -> str:
 
 def inserting_into_right_place(time_range: tuple, time_interval: tuple) -> tuple:
     if (time_range[0] == time_interval[0]) and (time_range[1] == time_interval[1]):
-        print('They are the same!')
+        logger.info('They are the same!')
         return 0,
     elif time_range[0] == time_interval[0]:
-        print('Beginning is the same!')
+        logger.info('Beginning is the same!')
         return time_range[1], time_interval[1]
     elif time_range[1] == time_interval[1]:
-        print('End is the same!')
+        logger.info('End is the same!')
         return time_interval[0], time_range[0]
     else:
-        print('Somewhere between!')
+        logger.info('Somewhere between!')
         return (time_interval[0], time_range[0]), (time_range[1], time_interval[1])
 
 
 def clearing_nulls_in_available_time(at_time: list):
-    print('Deleting zero intervals...')
+    logger.info('Deleting zero intervals...')
     if len(at_time) > 1:
         for index, time_interval in enumerate(at_time):
             if time_interval == (0,):
@@ -68,7 +71,7 @@ def daily_update_data():
 
 
 def set_general_available_time():
-    print('<<Setting available time>>')
+    logger.info('<<Setting available time>>')
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f, \
             open(AT_PATH, 'r', encoding='UTF-8') as at_f:  # at_f = available time file
         days_data = json.loads(dates_f.read())
@@ -76,11 +79,11 @@ def set_general_available_time():
         for day in days_data.keys():
             days_data[day]['available_time'] = at_data[day]
         rewrite_json_file(days_data, dates_f)
-    print('<<Setting complete>>')
+    logger.info('<<Setting complete>>')
 
 
 def update_today_time_to_default():
-    print('<<Updating today time>>')
+    logger.info('<<Updating today time>>')
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f, \
             open(AT_PATH, 'r', encoding='UTF-8') as at_f:  # at_f = available time file
         days_data = json.loads(dates_f.read())
@@ -88,11 +91,11 @@ def update_today_time_to_default():
         today_eng = TODAY.strftime('%A')
         days_data[today_eng]['available_time'] = at_data[today_eng]
         rewrite_json_file(days_data, dates_f)
-    print('<<Update complete>>')
+    logger.info('<<Update complete>>')
 
 
 def set_dates():
-    print('<<Setting dates>>')
+    logger.info('<<Setting dates>>')
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f:
         days_data = json.loads(dates_f.read())
         tomorrow = TODAY + timedelta(days=1)
@@ -116,11 +119,11 @@ def set_dates():
             month_date = str(tomorrow_date[1]) if tomorrow_date[1] > 9 else '0' + str(tomorrow_date[1])
             days_data[day]['date'] = '.'.join((day_date, month_date))
         rewrite_json_file(days_data, dates_f)
-    print('<<Setting complete>>')
+    logger.info('<<Setting complete>>')
 
 
 def change_time_interval(time_range: str, day: str):
-    print(f'<<Setting new time interval for {day}...>>')
+    logger.info(f'<<Setting new time interval for {day}...>>')
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f:
         days_data = json.loads(dates_f.read())
         day_at_data = days_data[day]['available_time']
@@ -128,13 +131,13 @@ def change_time_interval(time_range: str, day: str):
         days_data[day]['available_time'] = insert_time_range(time_range, at_time)
         days_data[day]['available_time'] = convert_min_into_str_time_ranges(days_data[day]['available_time'])
         rewrite_json_file(days_data, dates_f)
-    print('<<Setting complete>>')
+    logger.info('<<Setting complete>>')
 
 
 def insert_time_range(time_range: str, at_time: list) -> list:
-    print('Inserting time range...')
+    logger.info('Inserting time range...')
     if at_time == [(0,)]:
-        print(f'---{time_range} ignored. No available time---')
+        logger.info(f'---{time_range} ignored. No available time---')
         return at_time
     time_range = time_range_to_min(time_range)
     for index, time_interval in enumerate(at_time):
@@ -142,21 +145,21 @@ def insert_time_range(time_range: str, at_time: list) -> list:
             new_at = inserting_into_right_place(time_range, time_interval)
             if type(new_at[0]) == int:
                 at_time[index] = new_at
-                print('---Changed---')
+                logger.info('---Changed---')
             else:
                 at_time = at_time[:index] + [new_at[0], new_at[1]] + at_time[index + 1:]
-                print('---Two new intervals---')
+                logger.info('---Two new intervals---')
             return clearing_nulls_in_available_time(at_time)
-    print(f'---{time_range} ignored. It exceeds available time---')
+    logger.info(f'---{time_range} ignored. It exceeds available time---')
     return at_time
 
 
 def rewrite_json_file(data, file):
-    print('Rewriting json...')
+    logger.info('Rewriting json...')
     file.seek(0)
     file.truncate(0)
     json.dump(data, file, ensure_ascii=False, indent=4)
-    print('<<Rewriting done>>')
+    logger.info('Rewriting done')
 
 
 def time_range_to_min(time_range: str) -> tuple:
@@ -168,7 +171,7 @@ def time_range_to_min(time_range: str) -> tuple:
 
 
 def get_available_time_in_min(day_at: str) -> list:
-    print('Converting time string to mins list of tuples...')
+    logger.info('Converting time string to mins list of tuples...')
     if len(day_at) == 13:
         day_at = [time_range_to_min(day_at)]
     elif len(day_at) > 13:
@@ -183,7 +186,7 @@ def get_available_time_in_min(day_at: str) -> list:
 
 
 def update():
-    print('<<Updating available time intervals>>')
+    logger.info('<<Updating available time intervals>>')
     db_path = os.path.join(settings.BASE_DIR, 'db.sqlite3')
     conn = sqlite3.connect(db_path)
     day_after_7_days = TODAY + timedelta(days=7)
@@ -192,7 +195,6 @@ def update():
         f"""SELECT * from main_lesson 
         WHERE date_lesson >= '{TODAY.date()}' AND approved = TRUE AND date_lesson < '{day_after_7_days.date()}'""")
     result = cur.fetchall()
-    print(result)
     conn.close()
 
     set_general_available_time()
@@ -202,7 +204,6 @@ def update():
         lesson_time = element[2]
         lesson_date = '.'.join(element[1].split('-')[-1:-3:-1])
         lessons_data_dict[lesson_date] = lesson_time
-    print(lessons_data_dict)
 
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f:
         days_data = json.loads(dates_f.read())
@@ -213,7 +214,7 @@ def update():
                                                                          days_data[day]['available_time']))
                 days_data[day]['available_time'] = convert_min_into_str_time_ranges(days_data[day]['available_time'])
         rewrite_json_file(days_data, dates_f)
-    print('<<Update complete>>')
+    logger.info('<<Update complete>>')
 
 # change_time_inverval('15:00 - 18:00', 'Saturday')
 

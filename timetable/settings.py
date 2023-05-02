@@ -126,3 +126,36 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'my_formatter': {
+            'format': '{asctime} ({module}) [{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'main_handler': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'my_formatter'
+        },
+    },
+    'loggers': {
+        'main': {
+            'handlers': ['main_handler'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+CONTACTS = {
+    'name': os.getenv('CONTACTS_NAME'),
+    'phone': os.getenv('CONTACTS_PHONE'),
+    'email': os.getenv('CONTACTS_EMAIL'),
+    'vk': os.getenv('CONTACTS_VK'),
+}

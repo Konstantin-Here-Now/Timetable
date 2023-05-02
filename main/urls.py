@@ -11,7 +11,7 @@ urlpatterns = [
     path('register/', user_register, name='register'),
     path('profile/', profile, name='profile'),
 
-    path('lessons_list/', LessonListView.as_view(), name='lessons_list'),
+    path('lessons_list/', AllLessonListView.as_view(), name='lessons_list'),
     path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update')
 
 ]

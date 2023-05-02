@@ -10,7 +10,9 @@
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a href="{% url 'index' %}" class="nav-link px-2">Расписание</a></li>
         <li><a href="{% url 'contacts' %}" class="nav-link px-2">Контакты</a></li>
+        {% if perms.main.change_lesson %}
         <li><a href="{% url 'lessons_list' %}" class="nav-link px-2">Все занятия</a></li>
+        {% endif %}
     </ul>
 
     <div class="col-md-3 text-end">
