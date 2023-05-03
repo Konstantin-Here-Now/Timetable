@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -13,6 +12,7 @@ from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator
 
 from .dates_and_time import TODAY, update
 
@@ -66,9 +66,21 @@ def user_logout(request):
     return redirect('index')
 
 
+@login_required
 def profile(request):
     user = request.user
-    return render(request, 'main/users/profile.html', context={'user': user})
+    lessons = Lesson.objects.filter(pupil_id=user.id, date_lesson__gte=TODAY).order_by('date_lesson')
+
+    paginator = Paginator(lessons, 3)
+    pag_num = request.GET.get('page', 1)
+    page_objects = paginator.get_page(pag_num)
+
+    context = {
+        'user': user,
+        'lessons': lessons,
+        'page_obj': page_objects
+    }
+    return render(request, 'main/users/profile.html', context=context)
 
 
 class LessonCreateView(CreateView):
@@ -82,6 +94,10 @@ class LessonCreateView(CreateView):
         form.instance.pupil = self.request.user
         return super().form_valid(form)
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class AllLessonListView(ListView):
     model = Lesson
@@ -89,10 +105,10 @@ class AllLessonListView(ListView):
     context_object_name = 'lessons'
     pk_url_kwarg = 'lesson_id'
 
-    paginate_by = 5
+    paginate_by = 6
 
     def get_queryset(self):
-        return Lesson.objects.filter(date_lesson__gte=TODAY).order_by('-date_lesson')
+        return Lesson.objects.filter(date_lesson__gte=TODAY).order_by('date_lesson')
 
     @method_decorator(permission_required('main.view_lesson'))
     def dispatch(self, request, *args, **kwargs):

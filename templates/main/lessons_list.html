@@ -6,35 +6,32 @@
 {% endblock %}
 
 {% block content %}
-    <div style="text-align:center">
+    <div class="container" style="text-align:center">
         <br><br>
-        <div>
-            {% for lesson in page_obj.object_list %}
-                <div class="card"
-                     style="width: 18rem;height:30rem;display:inline-block;vertical-align:top;background-color: antiquewhite;">
-                    <div style="vertical-align: top;">
-                        <div style="margin-top: 10px;">
-                            {% if lesson.approved %}
-                                <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>
-                            {% else %}
-                                <p class="badge rounded-pill bg-danger" style='font-size: 16px'>Не одобрено</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="card-body">
-                            <h3 class="card-title" style="margin-bottom:50px;">{{ lesson.date_lesson }}</h3>
-                            <h4 class="card-text" style="margin-top:30px;">{{ lesson.time_lesson }}</h4>
-                            <h5 class="card-text" style="margin-top:30px;">{{ lesson.pupil }}</h5>
-                            <p class="card-text" style="margin-top:30px;">{{ lesson.desc }}</p>
-                        </div>
-
-                        <div style="position: absolute; bottom: 5px; width: 100%">
-                            <a href="{% url 'lesson_update' lesson.pk %}" class="btn btn-primary"
-                               style="margin-bottom: 10px;">Редактировать</a>
+        <div class="row">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for lesson in page_obj.object_list %}
+                    <div class="col">
+                        <div class="card border-primary mb-3">
+                            <div class="card-body">
+                                {% if lesson.approved %}
+                                    <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>
+                                {% else %}
+                                    <p class="badge rounded-pill bg-danger" style='font-size: 16px'>Не одобрено</p>
+                                {% endif %}
+                                <h4 class="card-title text-primary">{{ lesson.date_lesson }}</h4>
+                                <h5>{{ lesson.time_lesson }}</h5>
+                                <p>{{ lesson.pupil.first_name }} {{ lesson.pupil.last_name }}</p>
+                                <p>{{ lesson.desc }}</p>
+                                <div>
+                                    <a href="{% url 'lesson_update' lesson.pk %}" class="btn btn-primary"
+                                       style="margin-bottom: 10px;">Редактировать</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
 
         {% if page_obj.has_other_pages %}

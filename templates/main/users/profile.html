@@ -10,26 +10,69 @@
             <h1>{{ user.first_name }} {{ user.last_name }}</h1>
             <h3>{{ user.username }}</h3>
             <h3>{{ user.email }}</h3>
-
-
         </div>
 
         <br><br><br>
 
         <div class="row">
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card border-primary mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">Занятие</h5>
-                            <p>Время занятия</p>
-                            <p>Описание занятия: Клара у Карла украла кораллы, а Карл у Клары украл кларнет.</p>
+                {% for lesson in page_obj.object_list %}
+                    <div class="col">
+                        <div class="card border-primary mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">{{ lesson.date_lesson }}</h5>
+                                <p>{{ lesson.time_lesson }}</p>
+                                <p>{{ lesson.desc }}</p>
+                                {% if lesson.approved %}
+                                    <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>
+                                {% else %}
+                                    <p class="badge rounded-pill bg-danger" style='font-size: 16px'>Не одобрено</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
 
+        {% if page_obj.has_other_pages %}
+            <div class="container" style="padding: 10px;margin-top: 30px">
+                <div class="row align-items-center">
+                    <nav aria-label="Page navigation example" class="nav justify-content-center">
+                        <ul class="pagination" style="margin: auto">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for page in page_obj.paginator.page_range %}
+                                {% if page_obj.number == page %}
+                                    <li class="page-item active" aria-current="page">
+                                        <a class="page-link" href="#">{{ page }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        {% endif %}
 
         <br><br><br>
 

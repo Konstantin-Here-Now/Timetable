@@ -1,9 +1,10 @@
-import os
 import json
-import sqlite3
 import logging
+import os
+import sqlite3
 from calendar import monthrange
 from datetime import datetime, timedelta
+
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -64,12 +65,6 @@ def clearing_nulls_in_available_time(at_time: list):
     return at_time
 
 
-def daily_update_data():
-    set_dates()
-    update_today_time_to_default()
-    update()
-
-
 def set_general_available_time():
     logger.info('<<Setting available time>>')
     with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f, \
@@ -80,18 +75,6 @@ def set_general_available_time():
             days_data[day]['available_time'] = at_data[day]
         rewrite_json_file(days_data, dates_f)
     logger.info('<<Setting complete>>')
-
-
-def update_today_time_to_default():
-    logger.info('<<Updating today time>>')
-    with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f, \
-            open(AT_PATH, 'r', encoding='UTF-8') as at_f:  # at_f = available time file
-        days_data = json.loads(dates_f.read())
-        at_data = json.loads(at_f.read())
-        today_eng = TODAY.strftime('%A')
-        days_data[today_eng]['available_time'] = at_data[today_eng]
-        rewrite_json_file(days_data, dates_f)
-    logger.info('<<Update complete>>')
 
 
 def set_dates():
@@ -198,6 +181,7 @@ def update():
     conn.close()
 
     set_general_available_time()
+    set_dates()
 
     lessons_data_dict = dict()
     for element in result:
@@ -218,7 +202,6 @@ def update():
 
 # change_time_inverval('15:00 - 18:00', 'Saturday')
 
-# daily_update_data()
 # set_general_available_time()
 
 # update()
