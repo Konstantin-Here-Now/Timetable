@@ -8,15 +8,19 @@
     <div class="container" style="width: 18vw; text-align: center">
         <form method="post">
             {% csrf_token %}
-            {% for field in form %}
-                <p>
-                    {{ field.label_tag }}<br>
-                    {{ field }}
-                    {% for error in field.errors %}
-                        <p style="color: red">{{ error }}</p>
-                    {% endfor %}
-                </p>
-            {% endfor %}
+            {{ form.date_lesson.label_tag }}
+            {{ form.date_lesson }}
+            {{ form.date_lesson.errors }}
+
+            <br><br><br>
+
+            с <input type="time" name="time_start"> до <input type="time" name="time_end">
+
+            <br><br><br>
+
+            {{ form.desc.label_tag }}
+            {{ form.desc }}
+            {{ form.desc.errors }}
             <input type="submit" class="btn btn-primary" value="Записаться">
         </form>
     </div>

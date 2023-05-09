@@ -1,12 +1,18 @@
 {% load static %}
 
-<link href="{% static 'main/css/table.css' %}" rel="stylesheet">
-<table class="timetable">
+{% if request.mobile %}
+    <link href="{% static 'main/css/mobile_table.css' %}" rel="stylesheet">
+{% else %}
+    <link href="{% static 'main/css/desktop_table.css' %}" rel="stylesheet">
+{% endif %}
+<table>
     <tbody>
     {% for day in days_dataset.values %}
         <tr>
             <td>{{ day.date }}</td>
-            <td>{{ day.rus }}</td>
+            {% if not request.user_agent.is_mobile %}
+                <td>{{ day.rus }}</td>
+            {% endif %}
             <td>{{ day.available_time }}</td>
         </tr>
     {% endfor %}

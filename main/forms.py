@@ -12,19 +12,20 @@ from django.contrib.auth.models import User
 class LessonCreateForm(forms.ModelForm):
     class Meta:
         model = Lesson
-        fields = ('date_lesson', 'time_lesson', 'desc')
+        # fields = ('date_lesson', 'time_lesson', 'desc')
+        fields = ('date_lesson', 'desc')
         widgets = {
             'date_lesson': forms.TextInput(attrs={'class': 'form-input', 'type': 'date'}),
-            'time_lesson': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '12:00 - 13:00'}),
+            # 'time_lesson': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '12:00 - 13:00'}),
             'desc': forms.Textarea(
                 attrs={'class': 'form-input', 'placeholder': 'Предмет для занятий, дополнительные комментарии'}),
         }
 
-    def clean_time_lesson(self):
-        time_lesson = self.cleaned_data['time_lesson']
-        if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
-            raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
-        return time_lesson
+    # def clean_time_lesson(self):
+    #     time_lesson = self.cleaned_data['time_lesson']
+    #     if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
+    #         raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
+    #     return time_lesson
 
 
 class LessonUpdateForm(LessonCreateForm):
@@ -32,8 +33,15 @@ class LessonUpdateForm(LessonCreateForm):
         super(LessonCreateForm, self).__init__(*args, **kwargs)
 
     class Meta(LessonCreateForm.Meta):
-        fields = LessonCreateForm.Meta.fields + ('approved',)
+        fields = ('date_lesson', 'time_lesson', 'desc', 'approved')
         widgets = LessonCreateForm.Meta.widgets
+        widgets['time_lesson'] = forms.TextInput(attrs={'class': 'form-input', 'placeholder': '12:00 - 13:00'})
+
+    def clean_time_lesson(self):
+        time_lesson = self.cleaned_data['time_lesson']
+        if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
+            raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
+        return time_lesson
 
 
 class UserRegistrationForm(UserCreationForm):

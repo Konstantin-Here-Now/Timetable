@@ -1,0 +1,12 @@
+table {
+    width: 80%;
+    font-size: 18px;
+    margin: auto;
+    text-align: center;
+    border: 2px solid grey;
+    border-collapse: collapse
+}
+
+td {
+    border: 1px solid grey;
+}

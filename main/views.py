@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 
-from .dates_and_time import TODAY, update
+from .dates_and_time import TODAY, DATES_JSON_PATH, update
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ CONTACTS = settings.CONTACTS
 
 
 def index(request):
-    with open('main/dates_and_time.json', 'r', encoding='UTF-8') as dates_f:
+    with open(DATES_JSON_PATH, 'r', encoding='UTF-8') as dates_f:
         dates_data = json.loads(dates_f.read())
     return render(request, 'main/index.html', context={'days_dataset': dates_data})
 
@@ -40,7 +40,7 @@ def user_register(request):
             user.username = user.username.lower()
             logger.info(f'{user.username} registered!')
             user.save()
-            # login(request, user)
+            login(request, user)
             return redirect('index')
     else:
         form = UserRegistrationForm()
@@ -92,6 +92,7 @@ class LessonCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.pupil = self.request.user
+        form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
         return super().form_valid(form)
 
     @method_decorator(login_required)

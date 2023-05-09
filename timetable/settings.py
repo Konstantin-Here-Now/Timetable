@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
+# for local server
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+# for testing
+ALLOWED_HOSTS = ['127.0.0.1', 'http://tyujas.pythonanywhere.com', ]
 
 # Application definition
 
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_user_agents',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'timetable.urls'
@@ -153,6 +157,8 @@ LOGGING = {
     },
 }
 
+
+# data for functions in view.py
 CONTACTS = {
     'name': os.getenv('CONTACTS_NAME'),
     'phone': os.getenv('CONTACTS_PHONE'),
