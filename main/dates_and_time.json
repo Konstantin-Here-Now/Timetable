@@ -1,37 +1,37 @@
 {
     "Monday": {
         "rus": "Понедельник",
-        "date": "15.05",
+        "date": "05.05",
         "available_time": "17:00 - 19:00"
     },
     "Tuesday": {
         "rus": "Вторник",
-        "date": "16.05",
+        "date": "30.05",
         "available_time": "19:00 - 23:00"
     },
     "Wednesday": {
         "rus": "Среда",
-        "date": "10.05",
+        "date": "31.05",
         "available_time": "---"
     },
     "Thursday": {
         "rus": "Четверг",
-        "date": "11.05",
+        "date": "01.06",
         "available_time": "17:00 - 23:00"
     },
     "Friday": {
         "rus": "Пятница",
-        "date": "12.05",
+        "date": "02.06",
         "available_time": "---"
     },
     "Saturday": {
         "rus": "Суббота",
-        "date": "13.05",
-        "available_time": "09:00 - 09:30, 10:30 - 11:00, 14:00 - 23:00"
+        "date": "03.06",
+        "available_time": "09:00 - 11:00, 14:00 - 15:00, 16:00 - 23:00"
     },
     "Sunday": {
         "rus": "Воскресенье",
-        "date": "14.05",
+        "date": "04.06",
         "available_time": "---"
     }
 }

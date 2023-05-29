@@ -101,6 +101,10 @@ def set_dates():
                 day_date = '0' + day_date
             month_date = str(tomorrow_date[1]) if tomorrow_date[1] > 9 else '0' + str(tomorrow_date[1])
             days_data[day]['date'] = '.'.join((day_date, month_date))
+
+            # check if it's end of the month (then increment month number)
+            if int(day_date) == number_of_days_in_month:
+                tomorrow_date[1] += 1
         rewrite_json_file(days_data, dates_f)
     logger.info('<<Setting complete>>')
 
