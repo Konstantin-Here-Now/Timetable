@@ -1,0 +1,11 @@
+# Downgrading setuptools is necessary
+pip install "setuptools<58.0.0"
+
+# Database migrations
+python manage.py migrate
+
+# Collecting static
+python manage.py collectstatic
+
+# Add site to ALLOWED_HOSTS
+# Add .env

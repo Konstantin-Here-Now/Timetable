@@ -13,6 +13,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 
 from .dates_and_time import TODAY, DATES_JSON_PATH, update
 
@@ -91,8 +92,25 @@ class LessonCreateView(CreateView):
     success_url = reverse_lazy('index')
 
     def form_valid(self, form):
-        form.instance.pupil = self.request.user
+        pupil = self.request.user
+        form.instance.pupil = pupil
         form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
+
+        # Sending email to settings.EMAIL_ADMIN
+        message_to_send = f'{pupil.first_name} {pupil.last_name} предложил(-а) провести занятие ' \
+                          f'{form.instance.date_lesson} в промежуток {form.instance.time_lesson}.'
+        if form.instance.desc:
+            additional_message = form.instance.desc
+            message_to_send += f'\nУченик оставил следующее сообщение:\n {form.instance.desc}'
+        else:
+            message_to_send += f'\nУченик не оставил дополнительных сообщений.'
+        send_mail(
+            subject='Новая запись на занятие',
+            message=message_to_send,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.EMAIL_ADMIN],
+            fail_silently=False
+        )
         return super().form_valid(form)
 
     @method_decorator(login_required)
@@ -128,6 +146,14 @@ class LessonUpdateView(UpdateView):
         date_lesson = form.instance.date_lesson
         approved = 'APPROVED' if form.instance.approved is True else 'DISAPPROVED'
         logger.info(f'<<{approved}>> {pupil} {time_lesson} {date_lesson}')
+        if approved == 'APPROVED':
+            send_mail(
+                subject='Ваше занятие одобрено',
+                message=f'Одобрено занятие {date_lesson} в промежуток {time_lesson}.',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[pupil.email],
+                fail_silently=False
+            )
         return super().form_valid(form)
 
     def get_success_url(self):
