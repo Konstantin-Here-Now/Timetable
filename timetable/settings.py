@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG')
 
 # for testing
-ALLOWED_HOSTS = ['127.0.0.1', 'http://tyujas.pythonanywhere.com', ]
+ALLOWED_HOSTS = ['127.0.0.1', 'tyujas.pythonanywhere.com', 'konstadmin.pythonanywhere.com']
 
 # Application definition
 
@@ -165,11 +165,12 @@ CONTACTS = {
     'email': os.getenv('CONTACTS_EMAIL'),
     'vk': os.getenv('CONTACTS_VK'),
 }
+MAX_TIME_FOR_LESSON = int(os.getenv('MAX_TIME_FOR_LESSON'))  # in minutes
 
 EMAIL_ADMIN = os.getenv('EMAIL_ADMIN')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

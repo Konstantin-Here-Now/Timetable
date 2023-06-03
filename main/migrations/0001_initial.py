@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('desc', models.TextField(blank=True, verbose_name='Описание')),
                 ('date_created', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания записи')),
                 ('approved', models.BooleanField(default=False, verbose_name='Одобрено?')),
-                ('pupil', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Занятие',

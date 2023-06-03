@@ -70,7 +70,7 @@ def user_logout(request):
 @login_required
 def profile(request):
     user = request.user
-    lessons = Lesson.objects.filter(pupil_id=user.id, date_lesson__gte=TODAY).order_by('date_lesson')
+    lessons = Lesson.objects.filter(user_id=user.id, date_lesson__gte=TODAY).order_by('date_lesson')
 
     paginator = Paginator(lessons, 3)
     pag_num = request.GET.get('page', 1)
@@ -93,12 +93,15 @@ class LessonCreateView(CreateView):
 
     def form_valid(self, form):
         pupil = self.request.user
-        form.instance.pupil = pupil
+        date_lesson = form.instance.date_lesson
+
+        form.instance.user = pupil
         form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
+        logger.info(f'{pupil} created lesson request at {date_lesson} {form.instance.time_lesson}')
 
         # Sending email to settings.EMAIL_ADMIN
         message_to_send = f'{pupil.first_name} {pupil.last_name} предложил(-а) провести занятие ' \
-                          f'{form.instance.date_lesson} в промежуток {form.instance.time_lesson}.'
+                          f'{date_lesson} в промежуток {form.instance.time_lesson}.'
         if form.instance.desc:
             additional_message = form.instance.desc
             message_to_send += f'\nУченик оставил следующее сообщение:\n {form.instance.desc}'
@@ -118,7 +121,7 @@ class LessonCreateView(CreateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class AllLessonListView(ListView):
+class LessonListView(ListView):
     model = Lesson
     template_name = 'main/lessons_list.html'
     context_object_name = 'lessons'
@@ -141,7 +144,7 @@ class LessonUpdateView(UpdateView):
     context_object_name = 'form'
 
     def form_valid(self, form):
-        pupil = form.instance.pupil
+        pupil = form.instance.user
         time_lesson = form.instance.time_lesson
         date_lesson = form.instance.date_lesson
         approved = 'APPROVED' if form.instance.approved is True else 'DISAPPROVED'
@@ -163,3 +166,25 @@ class LessonUpdateView(UpdateView):
     @method_decorator(permission_required('main.change_lesson'))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+
+# class LessonDeleteView(DeleteView):
+#     model = Lesson
+#
+#     def delete(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         success_url = self.get_success_url()
+#         user = request.user
+#         if user.is_staff or self.object.user == user:
+#             print('GOOD')
+#         else:
+#             print('BAD')
+#         # self.object.delete()
+#         return HttpResponseRedirect(success_url)
+#
+#     def get_success_url(self):
+#         user = self.request.user
+#         if user.is_staff:
+#             return reverse_lazy('lessons_list')
+#         elif not user.is_staff:
+#             return reverse_lazy('profile')
