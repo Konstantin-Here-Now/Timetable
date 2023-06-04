@@ -24,17 +24,16 @@ class LessonCreateForm(forms.ModelForm):
             'time_lesson_end': forms.TimeInput(attrs={'class': 'form-input', 'placeholder': '13:00', 'type': 'time'})
         }
 
-    # def clean_time_lesson_end(self):
-    #     time_lesson = self.cleaned_data['time_lesson']
-    #     time_lesson_range = time_range_to_min(time_lesson)
-    #     time_lesson_hours = time_lesson_range[1] - time_lesson_range[0]
-    #     if time_lesson_hours < 0:
-    #         raise ValidationError('Начало занятия позже, чем его конец')
-    #     if time_lesson_hours > settings.MAX_TIME_FOR_LESSON:
-    #         raise ValidationError(f'Максимальная продолжительность занятия - {settings.MAX_TIME_FOR_LESSON} минут')
-    #     if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
-    #         raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
-    #     return time_lesson
+    def clean_time_lesson_end(self):
+        time_lesson_end = self.cleaned_data['time_lesson_start']
+        time_lesson = f"{time_lesson_end} - {self.cleaned_data['time_lesson_end']}"
+        time_lesson_range = time_range_to_min(time_lesson)
+        time_lesson_hours = time_lesson_range[1] - time_lesson_range[0]
+        if time_lesson_hours < 0:
+            raise ValidationError('Начало занятия позже, чем его конец')
+        if time_lesson_hours > settings.MAX_TIME_FOR_LESSON:
+            raise ValidationError(f'Максимальная продолжительность занятия - {settings.MAX_TIME_FOR_LESSON} минут')
+        return time_lesson_end
 
 
 class LessonUpdateForm(LessonCreateForm):

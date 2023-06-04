@@ -15,11 +15,10 @@
             <br><br><br>
             <p>Время занятия</p>
             {{ form.time_lesson_start }} - {{ form.time_lesson_end }}
-            {#            <input type="time" name="time_start"> до <input type="time" name="time_end">#}
-            {{ form.time_lesson_start.errors }}
-            {{ form.time_lesson_end.errors }}
-
-            <br><br><br>
+            {% if form.time_lesson_end.errors or form.time_lesson_start.errors %}
+                {{ form.time_lesson_start.errors }}
+                {{ form.time_lesson_end.errors }}
+            {% endif %}
 
             {{ form.desc.label_tag }}
             {{ form.desc }}
