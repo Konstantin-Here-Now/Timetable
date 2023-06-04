@@ -27,11 +27,11 @@
     "Saturday": {
         "rus": "Суббота",
         "date": "10.06",
-        "available_time": "09:00 - 11:00, 14:00 - 23:00"
+        "available_time": "10:00 - 11:00, 14:00 - 23:00"
     },
     "Sunday": {
         "rus": "Воскресенье",
-        "date": "04.06",
+        "date": "11.06",
         "available_time": "---"
     }
 }

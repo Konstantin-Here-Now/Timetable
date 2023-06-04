@@ -94,14 +94,15 @@ class LessonCreateView(CreateView):
     def form_valid(self, form):
         pupil = self.request.user
         date_lesson = form.instance.date_lesson
+        time_lesson = f'{form.instance.time_lesson_start} - {form.instance.time_lesson_end}'
 
         form.instance.user = pupil
-        form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
-        logger.info(f'{pupil} created lesson request at {date_lesson} {form.instance.time_lesson}')
+        # form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
+        logger.info(f'{pupil} created lesson request at {date_lesson} {time_lesson}')
 
         # Sending email to settings.EMAIL_ADMIN
-        message_to_send = f'{pupil.first_name} {pupil.last_name} предложил(-а) провести занятие ' \
-                          f'{date_lesson} в промежуток {form.instance.time_lesson}.'
+        message_to_send = f'{pupil.first_name} {pupil.last_name} предложил(-а) провести занятие {date_lesson} ' \
+                          f'в промежуток {time_lesson}.'
         if form.instance.desc:
             additional_message = form.instance.desc
             message_to_send += f'\nУченик оставил следующее сообщение:\n {form.instance.desc}'
@@ -145,7 +146,7 @@ class LessonUpdateView(UpdateView):
 
     def form_valid(self, form):
         pupil = form.instance.user
-        time_lesson = form.instance.time_lesson
+        time_lesson = f'{form.instance.time_lesson_start} - {form.instance.time_lesson_end}'
         date_lesson = form.instance.date_lesson
         approved = 'APPROVED' if form.instance.approved is True else 'DISAPPROVED'
         logger.info(f'<<{approved}>> {pupil} {time_lesson} {date_lesson}')

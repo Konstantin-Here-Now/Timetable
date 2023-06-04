@@ -21,7 +21,7 @@
                         <div class="card border-primary mb-3">
                             <div class="card-body">
                                 <h5 class="card-title text-primary">{{ lesson.date_lesson }}</h5>
-                                <p>{{ lesson.time_lesson }}</p>
+                                <p>{{ lesson.time_lesson_start }} - {{ lesson.time_lesson_end }}</p>
                                 <p>{{ lesson.desc }}</p>
                                 {% if lesson.approved %}
                                     <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>

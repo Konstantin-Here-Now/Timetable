@@ -10,27 +10,31 @@
         <br><br>
         <div class="row">
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for lesson in page_obj.object_list %}
-                    <div class="col">
-                        <div class="card border-primary mb-3">
-                            <div class="card-body">
-                                {% if lesson.approved %}
-                                    <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>
-                                {% else %}
-                                    <p class="badge rounded-pill bg-danger" style='font-size: 16px'>Не одобрено</p>
-                                {% endif %}
-                                <h4 class="card-title text-primary">{{ lesson.date_lesson }}</h4>
-                                <h5>{{ lesson.time_lesson }}</h5>
-                                <p>{{ lesson.pupil.first_name }} {{ lesson.pupil.last_name }}</p>
-                                <p>{{ lesson.desc }}</p>
-                                <div>
-                                    <a href="{% url 'lesson_update' lesson.pk %}" class="btn btn-primary"
-                                       style="margin-bottom: 10px;">Редактировать</a>
+                {% if page_obj.object_list %}
+                    {% for lesson in page_obj.object_list %}
+                        <div class="col">
+                            <div class="card border-primary mb-3">
+                                <div class="card-body">
+                                    {% if lesson.approved %}
+                                        <p class="badge rounded-pill bg-success" style='font-size: 16px'>Одобрено</p>
+                                    {% else %}
+                                        <p class="badge rounded-pill bg-danger" style='font-size: 16px'>Не одобрено</p>
+                                    {% endif %}
+                                    <h4 class="card-title text-primary">{{ lesson.date_lesson }}</h4>
+                                    <h5>{{ lesson.time_lesson_start }} - {{ lesson.time_lesson_end }}</h5>
+                                    <p>{{ lesson.pupil.first_name }} {{ lesson.pupil.last_name }}</p>
+                                    <p>{{ lesson.desc }}</p>
+                                    <div>
+                                        <a href="{% url 'lesson_update' lesson.pk %}" class="btn btn-primary"
+                                           style="margin-bottom: 10px;">Редактировать</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <h1 style="margin: auto">Занятий нет</h1>
+                {% endif %}
             </div>
         </div>
 

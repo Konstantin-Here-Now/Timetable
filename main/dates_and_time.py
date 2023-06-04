@@ -189,7 +189,7 @@ def update():
 
     lessons_data_dict = dict()
     for element in result:
-        lesson_time = element[2]
+        lesson_time = f'{element[2][:-3]} - {element[3][:-3]}'
         lesson_date = '.'.join(element[1].split('-')[-1:-3:-1])
         lessons_data_dict[lesson_date] = lesson_time
 
