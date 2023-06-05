@@ -1,19 +1,31 @@
 import json
 import logging
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetView
+
+from django.utils.encoding import force_bytes
+from django.utils.decorators import method_decorator
+from django.utils.http import urlsafe_base64_encode
+from django.core.paginator import Paginator
+from django.core.mail import send_mail
+
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .models import Lesson
+
+from .models import Lesson, User
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
 
-from django.conf import settings
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required, permission_required
-from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator
-from django.core.mail import send_mail
 
 from .dates_and_time import TODAY, DATES_JSON_PATH, update
 
@@ -65,6 +77,49 @@ def user_logout(request):
     logger.info(f'{request.user.username} logs out!')
     logout(request)
     return redirect('index')
+
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'main/users/password_reset/password_reset.html'
+    email_template_name = 'main/users/password_reset/password_reset_email.html'
+    subject_template_name = 'main/users/password_reset/password_reset_subject.txt'
+    success_message = 'Мы отправили письмо с дальнейшими инструкциями по смене пароля'
+    success_url = reverse_lazy('index')
+
+
+# def password_reset(request):
+#     if request.method == "POST":
+#         password_reset_form = PasswordResetForm(request.POST)
+#         if password_reset_form.is_valid():
+#             mail = password_reset_form.cleaned_data['email']
+#             try:
+#                 user = User.objects.get(email=mail)
+#             except Exception:
+#                 user = False
+#             if user:
+#                 email_template_name = "html_template.html"
+#                 content = {
+#                     "email": user.email,
+#                     'domain': request.get_host,
+#                     'site_name': 'SITENAME',
+#                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                     'user': user,
+#                     'token': default_token_generator.make_token(user),
+#                     'protocol': 'http'
+#                 }
+#                 message_html = render_to_string(email_template_name, content)
+#                 send_mail(
+#                     subject='Запрошен сброс пароля',
+#                     message='ссылка',
+#                     from_email=settings.EMAIL_HOST_USER,
+#                     recipient_list=[user.email],
+#                     html_message=message_html,
+#                     fail_silently=False
+#                 )
+#             else:
+#                 messages.error(request, 'Такое адрес электронной почты не найден')
+#                 return redirect('password_reset')
+#     return render(request, template_name='other_pass_reset.html')
 
 
 @login_required
@@ -167,7 +222,6 @@ class LessonUpdateView(UpdateView):
     @method_decorator(permission_required('main.change_lesson'))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
 
 # class LessonDeleteView(DeleteView):
 #     model = Lesson

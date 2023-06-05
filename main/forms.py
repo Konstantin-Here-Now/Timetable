@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from .models import Lesson
 from .dates_and_time import time_range_to_min
 
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -82,3 +82,13 @@ class UserLoginForm(AuthenticationForm):
         label='Введите пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-input'}),
     )
+
+
+class EmailValidationOnForgotPassword(PasswordResetForm):
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not User.objects.filter(email__iexact=email, is_active=True).exists():
+            msg = "Пользователь с таким электронным адресом отсутствует."
+            self.add_error('email', msg)
+        return email
+
