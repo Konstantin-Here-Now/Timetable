@@ -144,7 +144,7 @@ LOGGING = {
         'main_handler': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
             'formatter': 'my_formatter'
         },
     },

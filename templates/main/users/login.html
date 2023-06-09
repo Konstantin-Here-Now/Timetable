@@ -5,12 +5,14 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" class="btn btn-primary" value="Войти">
-            <a style="margin-left: 1.5rem;" href="{% url 'password_reset' %}"><i>Забыли пароль?</i></a>
-        </form>
+    <div class="container" style="width: 20%">
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" class="btn btn-primary" value="Войти">
+                <a style="margin-left: 1.5rem;" href="{% url 'password_reset' %}"><i>Забыли пароль?</i></a>
+            </form>
+        </div>
     </div>
 {% endblock %}

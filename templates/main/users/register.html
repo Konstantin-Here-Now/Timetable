@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <p style="text-align: center; font-size: 20px">Указывайте реальные имя, фамилию и почту. На почту будут приходить
-        уведомления о подтверждении занятия. Аккаунты с неизвестными ФИО будут удаляться.</p>
+    <p style="text-align: center; font-size: 20px">Пожалуйста, указывайте реальные имя, фамилию и почту. На почту будут
+        приходить уведомления о подтверждении занятия.</p>
+    <p style="text-align: center; font-size: 20px">Пароль содержать цифры и буквы и состоять минимум из 8 символов.</p>
     <div class="container" style="width: 18vw; text-align: center">
         <form method="post">
             {% csrf_token %}

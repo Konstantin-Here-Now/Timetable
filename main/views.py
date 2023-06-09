@@ -2,30 +2,22 @@ import json
 import logging
 
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetView
 
-from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
-from django.utils.http import urlsafe_base64_encode
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 
 from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-
-from .models import Lesson, User
+from .models import Lesson
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
-
 
 from .dates_and_time import TODAY, DATES_JSON_PATH, update
 
@@ -87,41 +79,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     success_url = reverse_lazy('index')
 
 
-# def password_reset(request):
-#     if request.method == "POST":
-#         password_reset_form = PasswordResetForm(request.POST)
-#         if password_reset_form.is_valid():
-#             mail = password_reset_form.cleaned_data['email']
-#             try:
-#                 user = User.objects.get(email=mail)
-#             except Exception:
-#                 user = False
-#             if user:
-#                 email_template_name = "html_template.html"
-#                 content = {
-#                     "email": user.email,
-#                     'domain': request.get_host,
-#                     'site_name': 'SITENAME',
-#                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#                     'user': user,
-#                     'token': default_token_generator.make_token(user),
-#                     'protocol': 'http'
-#                 }
-#                 message_html = render_to_string(email_template_name, content)
-#                 send_mail(
-#                     subject='Запрошен сброс пароля',
-#                     message='ссылка',
-#                     from_email=settings.EMAIL_HOST_USER,
-#                     recipient_list=[user.email],
-#                     html_message=message_html,
-#                     fail_silently=False
-#                 )
-#             else:
-#                 messages.error(request, 'Такое адрес электронной почты не найден')
-#                 return redirect('password_reset')
-#     return render(request, template_name='other_pass_reset.html')
-
-
 @login_required
 def profile(request):
     user = request.user
@@ -152,15 +109,14 @@ class LessonCreateView(CreateView):
         time_lesson = f'{form.instance.time_lesson_start} - {form.instance.time_lesson_end}'
 
         form.instance.user = pupil
-        # form.instance.time_lesson = self.request.POST.get('time_start') + ' - ' + self.request.POST.get('time_end')
         logger.info(f'{pupil} created lesson request at {date_lesson} {time_lesson}')
 
         # Sending email to settings.EMAIL_ADMIN
         message_to_send = f'{pupil.first_name} {pupil.last_name} предложил(-а) провести занятие {date_lesson} ' \
                           f'в промежуток {time_lesson}.'
-        if form.instance.desc:
-            additional_message = form.instance.desc
-            message_to_send += f'\nУченик оставил следующее сообщение:\n {form.instance.desc}'
+        additional_message = form.instance.desc
+        if additional_message:
+            message_to_send += f'\nУченик оставил следующее сообщение:\n {additional_message}'
         else:
             message_to_send += f'\nУченик не оставил дополнительных сообщений.'
         send_mail(

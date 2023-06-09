@@ -41,27 +41,27 @@ def convert_min_into_str_time_ranges(day_at: list) -> str:
     return day_at
 
 
-def inserting_into_right_place(time_range: tuple, time_interval: tuple) -> tuple:
-    if (time_range[0] == time_interval[0]) and (time_range[1] == time_interval[1]):
+def inserting_into_right_place(time_range_to_insert: tuple, at_time_interval: tuple) -> tuple:
+    if time_range_to_insert[0] < at_time_interval[0] or time_range_to_insert[1] > at_time_interval[1]:
+        raise ValueError("Time range exceeded.")
+    if (time_range_to_insert[0] == at_time_interval[0]) and (time_range_to_insert[1] == at_time_interval[1]):
         logger.info('They are the same!')
         return 0,
-    elif time_range[0] == time_interval[0]:
+    elif time_range_to_insert[0] == at_time_interval[0]:
         logger.info('Beginning is the same!')
-        return time_range[1], time_interval[1]
-    elif time_range[1] == time_interval[1]:
+        return time_range_to_insert[1], at_time_interval[1]
+    elif time_range_to_insert[1] == at_time_interval[1]:
         logger.info('End is the same!')
-        return time_interval[0], time_range[0]
+        return at_time_interval[0], time_range_to_insert[0]
     else:
         logger.info('Somewhere between!')
-        return (time_interval[0], time_range[0]), (time_range[1], time_interval[1])
+        return (at_time_interval[0], time_range_to_insert[0]), (time_range_to_insert[1], at_time_interval[1])
 
 
-def clearing_nulls_in_available_time(at_time: list):
+def clearing_nulls_in_available_time(at_time: list) -> list:
     logger.info('Deleting zero intervals...')
     if len(at_time) > 1:
-        for index, time_interval in enumerate(at_time):
-            if time_interval == (0,):
-                at_time = at_time[:index] + at_time[index + 1:]
+        at_time = [time_range for time_range in at_time if time_range != (0,)]
     return at_time
 
 
@@ -150,11 +150,14 @@ def rewrite_json_file(data, file):
 
 
 def time_range_to_min(time_range: str) -> tuple:
-    tr_separated = list(map(str.strip, time_range.split('-')))
-    for index, time in enumerate(tr_separated):
-        time_list = list(map(int, time.split(':')))
-        tr_separated[index] = time_list[0] * 60 + time_list[1]
-    return tuple(tr_separated)
+    try:
+        tr_separated = list(map(str.strip, time_range.split('-')))
+        for index, time in enumerate(tr_separated):
+            time_list = list(map(int, time.split(':')))
+            tr_separated[index] = time_list[0] * 60 + time_list[1]
+        return tuple(tr_separated) if tr_separated != [0, 0] else (0,)
+    except ValueError:
+        raise ValueError("Time range should be like this: '12:00 - 13:00'")
 
 
 def get_available_time_in_min(day_at: str) -> list:
@@ -203,9 +206,3 @@ def update():
                 days_data[day]['available_time'] = convert_min_into_str_time_ranges(days_data[day]['available_time'])
         rewrite_json_file(days_data, dates_f)
     logger.info('<<Update complete>>')
-
-# change_time_inverval('15:00 - 18:00', 'Saturday')
-
-# set_general_available_time()
-
-# update()

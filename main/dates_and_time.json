@@ -1,22 +1,22 @@
 {
     "Monday": {
         "rus": "Понедельник",
-        "date": "05.06",
+        "date": "12.06",
         "available_time": "17:00 - 19:00"
     },
     "Tuesday": {
         "rus": "Вторник",
-        "date": "06.06",
+        "date": "13.06",
         "available_time": "19:00 - 23:00"
     },
     "Wednesday": {
         "rus": "Среда",
-        "date": "07.06",
+        "date": "14.06",
         "available_time": "---"
     },
     "Thursday": {
         "rus": "Четверг",
-        "date": "08.06",
+        "date": "15.06",
         "available_time": "17:00 - 23:00"
     },
     "Friday": {
@@ -27,7 +27,7 @@
     "Saturday": {
         "rus": "Суббота",
         "date": "10.06",
-        "available_time": "10:00 - 11:00, 14:00 - 23:00"
+        "available_time": "09:00 - 11:00, 14:00 - 23:00"
     },
     "Sunday": {
         "rus": "Воскресенье",
