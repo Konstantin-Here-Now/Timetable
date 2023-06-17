@@ -1,10 +1,8 @@
-import re
-
 from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import Lesson
-from .dates_and_time import time_range_to_min
+from .dates_and_time import TODAY, time_range_to_min, is_time_available
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth.models import User
@@ -25,15 +23,28 @@ class LessonCreateForm(forms.ModelForm):
         }
 
     def clean_time_lesson_end(self):
-        time_lesson_end = self.cleaned_data['time_lesson_start']
-        time_lesson = f"{time_lesson_end} - {self.cleaned_data['time_lesson_end']}"
+        time_lesson_end = self.cleaned_data['time_lesson_end']
+        time_lesson = f"{self.cleaned_data['time_lesson_start']} - {time_lesson_end}"
         time_lesson_range = time_range_to_min(time_lesson)
         time_lesson_hours = time_lesson_range[1] - time_lesson_range[0]
         if time_lesson_hours < 0:
             raise ValidationError('Начало занятия позже, чем его конец')
         if time_lesson_hours > settings.MAX_TIME_FOR_LESSON:
             raise ValidationError(f'Максимальная продолжительность занятия - {settings.MAX_TIME_FOR_LESSON} минут')
+        if time_lesson_hours < settings.MIN_TIME_FOR_LESSON:
+            raise ValidationError(f'Минимальная продолжительность занятия - {settings.MIN_TIME_FOR_LESSON} минут')
+
+        date_lesson = self.cleaned_data['date_lesson']
+        if not is_time_available(day_date=date_lesson, time_range=time_lesson):
+            raise ValidationError(f'Выбранное Вами время недоступно для записи')
+
         return time_lesson_end
+
+    def clean_date_lesson(self):
+        date_lesson = self.cleaned_data['date_lesson']
+        if date_lesson < TODAY.date():
+            raise ValidationError(f'Пока машину времени не придумали, Вы не можете записаться на занятие в прошлом')
+        return date_lesson
 
 
 class LessonUpdateForm(LessonCreateForm):
@@ -43,18 +54,6 @@ class LessonUpdateForm(LessonCreateForm):
     class Meta(LessonCreateForm.Meta):
         fields = ('date_lesson', 'time_lesson_start', 'time_lesson_end', 'desc', 'approved')
         widgets = LessonCreateForm.Meta.widgets
-
-    # def clean_time_lesson_end(self):
-    #     time_lesson = self.cleaned_data['time_lesson']
-    #     time_lesson_range = time_range_to_min(time_lesson)
-    #     time_lesson_hours = time_lesson_range[1] - time_lesson_range[0]
-    #     if time_lesson_hours < 0:
-    #         raise ValidationError('Начало занятия позже, чем его конец')
-    #     if time_lesson_hours > settings.MAX_TIME_FOR_LESSON:
-    #         raise ValidationError(f'Максимальная продолжительность занятия - {settings.MAX_TIME_FOR_LESSON} минут')
-    #     if not re.fullmatch(r'\d{2}:\d{2} - \d{2}:\d{2}', time_lesson):
-    #         raise ValidationError('Время записи должно иметь похожие вид: "09:00 - 10:00"')
-    #     return time_lesson
 
 
 class UserRegistrationForm(UserCreationForm):

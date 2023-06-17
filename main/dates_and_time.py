@@ -3,7 +3,7 @@ import logging
 import os
 import sqlite3
 from calendar import monthrange
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 from django.conf import settings
 
@@ -37,7 +37,6 @@ def convert_min_into_str_time_ranges(day_at: list) -> str:
     for at_time in day_at:
         time_list.append(min_to_time_range(at_time))
     day_at = ", ".join(time_list)
-
     return day_at
 
 
@@ -136,7 +135,7 @@ def insert_time_range(time_range: str, at_time: list) -> list:
             else:
                 at_time = at_time[:index] + [new_at[0], new_at[1]] + at_time[index + 1:]
                 logger.info('---Two new intervals---')
-            return clearing_nulls_in_available_time(at_time)
+            return clearing_nulls_in_available_time(at_time)  # nulls == presence of (0,) in at_time
     logger.info(f'---{time_range} ignored. It exceeds available time---')
     return at_time
 
@@ -173,6 +172,20 @@ def get_available_time_in_min(day_at: str) -> list:
         day_at = [(0,)]
 
     return day_at
+
+
+def is_time_available(day_date: date, time_range: str) -> bool:
+    logger.info('Check if time available...')
+    day_name = day_date.strftime('%A')
+    if day_date > (TODAY + timedelta(days=7)).date():
+        with open(AT_PATH, 'r', encoding='UTF-8') as at_f:
+            at_data = json.loads(at_f.read())
+    else:
+        with open(DATES_JSON_PATH, 'r+', encoding='UTF-8') as dates_f:
+            at_data = json.loads(dates_f.read())
+    before_adding_new_time_range = get_available_time_in_min(at_data[day_name]['available_time'])
+    after_adding_new_time_range = insert_time_range(time_range, before_adding_new_time_range)
+    return not before_adding_new_time_range == after_adding_new_time_range
 
 
 def update():

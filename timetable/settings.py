@@ -28,8 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-# for testing
-ALLOWED_HOSTS = ['127.0.0.1', 'tyujas.pythonanywhere.com', 'konstadmin.pythonanywhere.com']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST')]
 
 # Application definition
 
@@ -166,6 +165,7 @@ CONTACTS = {
     'vk': os.getenv('CONTACTS_VK'),
 }
 MAX_TIME_FOR_LESSON = int(os.getenv('MAX_TIME_FOR_LESSON'))  # in minutes
+MIN_TIME_FOR_LESSON = int(os.getenv('MIN_TIME_FOR_LESSON'))  # in minutes
 
 EMAIL_ADMIN = os.getenv('EMAIL_ADMIN')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
