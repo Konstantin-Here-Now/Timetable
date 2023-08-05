@@ -14,12 +14,12 @@ from django.core.mail import send_mail
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView
 
 from .models import Lesson
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
 
-from .dates_and_time import TODAY, DATES_JSON_PATH, update
+from main.business_logic.dates_and_time import TODAY, DATES_JSON_PATH, update
 
 logger = logging.getLogger(__name__)
 

@@ -13,7 +13,6 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
-# for local server
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

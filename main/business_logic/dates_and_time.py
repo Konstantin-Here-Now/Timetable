@@ -10,8 +10,8 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 TODAY = datetime.today()
-DATES_JSON_PATH = os.path.join(settings.BASE_DIR, r'main/dates_and_time.json')
-AT_PATH = os.path.join(settings.BASE_DIR, r'main/available_time.json')
+DATES_JSON_PATH = os.path.join(settings.BASE_DIR, r'main/business_logic/dates_and_time.json')
+AT_PATH = os.path.join(settings.BASE_DIR, r'main/business_logic/available_time.json')
 
 
 def min_to_real_time(minutes: int) -> str:

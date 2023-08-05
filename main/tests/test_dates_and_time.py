@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..dates_and_time import *
+from main.business_logic.dates_and_time import *
 
 
 class DatesAndTimeTestCase(TestCase):

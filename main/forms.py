@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import Lesson
-from .dates_and_time import TODAY, time_range_to_min, is_time_available
+from main.business_logic.dates_and_time import TODAY, time_range_to_min, is_time_available
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth.models import User
