@@ -1,10 +1,8 @@
-from typing import Pattern, Literal
+from dataclasses import dataclass
 from datetime import time
 
 # examples: "00:00 - 00:00", "12:00 - 13:00"
 TIME_RANGE_PATTERN = r'\d{2}:\d{2} - \d{2}:\d{2}'
-
-print(time.fromisoformat('12:00'))
 
 
 class TimeRange:
@@ -12,7 +10,12 @@ class TimeRange:
         time_range_in_minutes = self._to_tuple_of_minutes(time_range)
         proper_time_range = self._check_time_order(time_range_in_minutes)
 
-        self.time_range_in_min = proper_time_range
+        self.time_range_in_min: tuple[int, int] = proper_time_range
+
+    def __eq__(self, other):
+        if isinstance(other, TimeRange):
+            return self.time_range_in_min == other.time_range_in_min
+        return False
 
     @property
     def time_range(self) -> TIME_RANGE_PATTERN:
@@ -44,5 +47,3 @@ class TimeRange:
             return output_time_range[0], output_time_range[1]
         except ValueError:
             raise ValueError("Time range should look like this: '00:00 - 00:00'")
-
-

@@ -20,11 +20,20 @@ class TestTimeRange:
             test_class._to_tuple_of_minutes("0:0 - 0:0")
         assert str(err_info.value) == "Time range should look like this: '00:00 - 00:00'"
 
-    def test_check_time_order_default(self):
-        pass
+    def test_check_time_order_default(self, test_class):
+        test_time_range_in_min = (700, 900)
+        result = test_class._check_time_order(test_time_range_in_min)
+        assert result == test_time_range_in_min
 
-    def test_check_time_order_error(self):
-        pass
+    def test_check_time_order_midnight_at_the_end(self, test_class):
+        test_time_range_in_min = (700, 0)
+        result = test_class._check_time_order(test_time_range_in_min)
+        assert result == (700, 1440)
+
+    def test_check_time_order_error(self, test_class):
+        with pytest.raises(ValueError) as err_info:
+            test_class._check_time_order((700, 100))
+        assert str(err_info.value) == "End is earlier beginning!"
 
     def test_time_range_str_output(self, test_class):
         result = test_class.time_range
