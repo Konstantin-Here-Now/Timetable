@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import time
 
 # examples: "00:00 - 00:00", "12:00 - 13:00"
@@ -6,8 +5,8 @@ TIME_RANGE_PATTERN = r'\d{2}:\d{2} - \d{2}:\d{2}'
 
 
 class TimeRange:
-    def __init__(self, time_range: TIME_RANGE_PATTERN):
-        time_range_in_minutes = self._to_tuple_of_minutes(time_range)
+    def __init__(self, time_range: str | tuple[int, int]):
+        time_range_in_minutes = self._to_tuple_of_minutes(time_range) if isinstance(time_range, str) else time_range
         proper_time_range = self._check_time_order(time_range_in_minutes)
 
         self.time_range_in_min: tuple[int, int] = proper_time_range
@@ -19,13 +18,18 @@ class TimeRange:
 
     @property
     def time_range(self) -> TIME_RANGE_PATTERN:
-        time_range_start_in_min = self.time_range_in_min[0]
-        time_range_end_in_min = self.time_range_in_min[1]
-
-        time_range_start_str = '{:02d}:{:02d}'.format(*divmod(time_range_start_in_min, 60))
-        time_range_end_str = '{:02d}:{:02d}'.format(*divmod(time_range_end_in_min, 60))
+        time_range_start_str = '{:02d}:{:02d}'.format(*divmod(self.start, 60))
+        time_range_end_str = '{:02d}:{:02d}'.format(*divmod(self.end, 60))
 
         return f'{time_range_start_str} - {time_range_end_str}'
+
+    @property
+    def start(self):
+        return self.time_range_in_min[0]
+
+    @property
+    def end(self):
+        return self.time_range_in_min[1]
 
     @staticmethod
     def _check_time_order(time_range: tuple[int, int]) -> tuple[int, int] | ValueError:
@@ -33,6 +37,8 @@ class TimeRange:
         time_range_end = time_range[1] if time_range[1] != 0 else 1440
         if time_range_end > time_range_start:
             return time_range_start, time_range_end
+        elif time_range_start == time_range_end:
+            raise ValueError("End is the same as beginning!")
         else:
             raise ValueError("End is earlier beginning!")
 
