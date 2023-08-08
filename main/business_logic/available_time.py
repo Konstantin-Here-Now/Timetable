@@ -1,5 +1,3 @@
-from typing import Iterable, Sequence
-
 from main.business_logic.exceptions import AvailableTimeExceeded
 from main.business_logic.time_range import TimeRange
 

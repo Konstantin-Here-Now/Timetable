@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import json
 import os
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
@@ -155,8 +156,10 @@ LOGGING = {
     },
 }
 
-
+# TODO make it clear with json operations
 # data for functions in view.py
+with open(os.path.join(BASE_DIR, r'available_time.json'), 'r', encoding='UTF-8') as at_f:
+    AVAILABLE_TIME: str = json.dumps(at_f.read()).replace('\\"', "\"")
 CONTACTS = {
     'name': os.getenv('CONTACTS_NAME'),
     'phone': os.getenv('CONTACTS_PHONE'),

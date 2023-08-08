@@ -24,4 +24,12 @@ class Lesson(models.Model):
 
 
 class AvailableTime(models.Model):
-    time_type: Literal["default", "actual"] = models.TextField(blank=False, null=False, verbose_name="Тип времени")
+    time_type: Literal["default", "actual"] = models.TextField(primary_key=True, blank=False, null=False, verbose_name="Тип времени")
+    at: dict[str, object] = models.JSONField(blank=False, null=False, verbose_name="Свободное время")
+
+    def __str__(self):
+        return f'{self.time_type} time'
+
+    class Meta:
+        verbose_name = 'Свободное время'
+        verbose_name_plural = 'Свободное время'
