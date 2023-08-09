@@ -26,6 +26,11 @@ class TestAvailableTime:
         result = test_class_at.at_str
         assert result == EXAMPLE_AVAILABLE_TIME
 
+    def test_at_str_empty(self, test_class_at):
+        test_class_at.at = []
+        result = test_class_at.at_str
+        assert result == "---"
+
     def test_insert_same(self, test_class_at):
         test_class_at.insert(TimeRange("12:00 - 13:00"))
         assert test_class_at.at_str == '14:00 - 15:00'

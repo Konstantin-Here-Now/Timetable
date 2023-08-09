@@ -13,8 +13,11 @@ class AvailableTime:
 
     @property
     def at_str(self) -> str:
-        list_of_at = [tr.time_range for tr in self.at]
-        return ", ".join(list_of_at)
+        if self.at:
+            list_of_at = [tr.time_range for tr in self.at]
+            return ", ".join(list_of_at)
+        else:
+            return "---"
 
     @staticmethod
     def _to_list_of_time_ranges(available_time: str) -> list[TimeRange]:

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import json
 import os
 from pathlib import Path
+
+import yaml
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -156,18 +158,15 @@ LOGGING = {
     },
 }
 
-# TODO make it clear with json operations
-# data for functions in view.py
-with open(os.path.join(BASE_DIR, r'available_time.json'), 'r', encoding='UTF-8') as at_f:
-    AVAILABLE_TIME: str = json.dumps(at_f.read()).replace('\\"', "\"")
-CONTACTS = {
-    'name': os.getenv('CONTACTS_NAME'),
-    'phone': os.getenv('CONTACTS_PHONE'),
-    'email': os.getenv('CONTACTS_EMAIL'),
-    'vk': os.getenv('CONTACTS_VK'),
-}
-MAX_TIME_FOR_LESSON = int(os.getenv('MAX_TIME_FOR_LESSON'))  # in minutes
-MIN_TIME_FOR_LESSON = int(os.getenv('MIN_TIME_FOR_LESSON'))  # in minutes
+with open(os.path.join(BASE_DIR, r'config.yaml'), 'r') as data_f:
+    CONFIG = yaml.load(data_f, yaml.BaseLoader)
+
+CONTACTS = CONFIG["teacher_info"]
+AVAILABLE_TIME = CONFIG["default_available_time"]
+
+LESSON_SETTINGS = CONFIG["lesson_settings"]
+MIN_TIME_FOR_LESSON = int(LESSON_SETTINGS['min_time_for_lesson'])
+MAX_TIME_FOR_LESSON = int(LESSON_SETTINGS['max_time_for_lesson'])
 
 EMAIL_ADMIN = os.getenv('EMAIL_ADMIN')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

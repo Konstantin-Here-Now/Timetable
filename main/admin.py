@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lesson, AvailableTime
+from .models import Lesson, AvailableTimeModel
 
 
 class LessonAdmin(admin.ModelAdmin):
@@ -15,4 +15,4 @@ class AvailableTimeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Lesson, LessonAdmin)
-admin.site.register(AvailableTime, AvailableTimeAdmin)
+admin.site.register(AvailableTimeModel, AvailableTimeAdmin)

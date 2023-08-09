@@ -23,9 +23,20 @@ class Lesson(models.Model):
         ordering = ['date_lesson', 'time_lesson_start', 'date_created']
 
 
-class AvailableTime(models.Model):
-    time_type: Literal["default", "actual"] = models.TextField(primary_key=True, blank=False, null=False, verbose_name="Тип времени")
-    at: dict[str, object] = models.JSONField(blank=False, null=False, verbose_name="Свободное время")
+class AvailableTimeModel(models.Model):
+    class TimeType(models.TextChoices):
+        DEFAULT = "default"
+        ACTUAL = "actual"
+
+    time_type: Literal["default", "actual"] = models.CharField(primary_key=True, max_length=7, choices=TimeType.choices,
+                                                               verbose_name="Тип времени")
+    monday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Понедельник")
+    tuesday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Вторник")
+    wednesday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Среда")
+    thursday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Четверг")
+    friday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Пятница")
+    saturday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Суббота")
+    sunday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Воскресенье")
 
     def __str__(self):
         return f'{self.time_type} time'
