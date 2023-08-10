@@ -7,6 +7,8 @@ from datetime import datetime, date, timedelta
 
 from django.conf import settings
 
+from main.business_logic.time_range import TimeRange
+
 logger = logging.getLogger(__name__)
 
 TODAY = datetime.today()
@@ -25,6 +27,9 @@ def min_to_real_time(minutes: int) -> str:
 
 
 def min_to_time_range(time_range_min: tuple) -> str:
+    tr = TimeRange(time_range_min)
+    return str(tr)
+
     if time_range_min == (0,):
         return '---'
     range_start = min_to_real_time(time_range_min[0])
@@ -175,6 +180,7 @@ def get_available_time_in_min(day_at: str) -> list:
 
 
 def is_time_available(day_date: date, time_range: str) -> bool:
+    return True
     logger.info('Check if time available...')
     day_name = day_date.strftime('%A')
     if day_date > (TODAY + timedelta(days=7)).date():

@@ -15,19 +15,19 @@ class DatesAndTimeTestCase(TestCase):
 
     def test_min_to_time_range(self):
         result_1 = min_to_time_range((720, 840))
-        result_2 = min_to_time_range((0,))
+        result_2 = min_to_time_range((0, 0))
         self.assertEqual(result_1, '12:00 - 14:00')
-        self.assertEqual(result_2, '---')
+        self.assertEqual(result_2, '00:00 - 24:00')
 
     def test_convert_min_into_str_time_ranges(self):
         result_1 = convert_min_into_str_time_ranges([(720, 840)])
         result_2 = convert_min_into_str_time_ranges([(720, 840), (900, 960)])
         result_3 = convert_min_into_str_time_ranges([(720, 840), (900, 960), (1020, 1080)])
-        result_4 = convert_min_into_str_time_ranges([(0,)])
+        result_4 = convert_min_into_str_time_ranges([(0, 0)])
         self.assertEqual(result_1, '12:00 - 14:00')
         self.assertEqual(result_2, '12:00 - 14:00, 15:00 - 16:00')
         self.assertEqual(result_3, '12:00 - 14:00, 15:00 - 16:00, 17:00 - 18:00')
-        self.assertEqual(result_4, '---')
+        self.assertEqual(result_4, '00:00 - 24:00')
 
     def test_inserting_into_right_place(self):
         result_1 = inserting_into_right_place((720, 840), (720, 840))
