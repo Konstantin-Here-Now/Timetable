@@ -27,9 +27,11 @@ class AvailableTimeModel(models.Model):
     class TimeType(models.TextChoices):
         DEFAULT = "default"
         ACTUAL = "actual"
+        DATES = "dates"
 
-    time_type: Literal["default", "actual"] = models.CharField(primary_key=True, max_length=7, choices=TimeType.choices,
-                                                               verbose_name="Тип времени")
+    time_type: Literal["default", "actual", "dates"] = models.CharField(primary_key=True, max_length=7,
+                                                                        choices=TimeType.choices,
+                                                                        verbose_name="Тип времени")
     monday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Понедельник")
     tuesday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Вторник")
     wednesday = models.CharField(max_length=80, blank=False, null=False, verbose_name="Среда")

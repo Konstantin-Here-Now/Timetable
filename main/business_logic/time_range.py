@@ -11,17 +11,19 @@ class TimeRange:
 
         self.time_range_in_min: tuple[int, int] = proper_time_range
 
-    def __eq__(self, other):
-        if isinstance(other, TimeRange):
-            return self.time_range_in_min == other.time_range_in_min
-        return False
-
-    @property
-    def time_range(self) -> TIME_RANGE_PATTERN:
+    def __str__(self):
         time_range_start_str = '{:02d}:{:02d}'.format(*divmod(self.start, 60))
         time_range_end_str = '{:02d}:{:02d}'.format(*divmod(self.end, 60))
 
         return f'{time_range_start_str} - {time_range_end_str}'
+
+    def __repr__(self):
+        return f"TimeRange({self.time_range_in_min})"
+
+    def __eq__(self, other):
+        if isinstance(other, TimeRange):
+            return self.time_range_in_min == other.time_range_in_min
+        return False
 
     @property
     def start(self):

@@ -23,29 +23,33 @@ class TestAvailableTime:
         assert str(err_info.value) == "Time range should look like this: '00:00 - 00:00'"
 
     def test_at_str(self, test_class_at):
-        result = test_class_at.at_str
+        result = str(test_class_at)
         assert result == EXAMPLE_AVAILABLE_TIME
 
     def test_at_str_empty(self, test_class_at):
         test_class_at.at = []
-        result = test_class_at.at_str
+        result = str(test_class_at)
         assert result == "---"
 
     def test_insert_same(self, test_class_at):
         test_class_at.insert(TimeRange("12:00 - 13:00"))
-        assert test_class_at.at_str == '14:00 - 15:00'
+        result = str(test_class_at)
+        assert result == '14:00 - 15:00'
 
     def test_insert_left(self, test_class_at):
         test_class_at.insert(TimeRange("12:00 - 12:30"))
-        assert test_class_at.at_str == '12:30 - 13:00, 14:00 - 15:00'
+        result = str(test_class_at)
+        assert result == '12:30 - 13:00, 14:00 - 15:00'
 
     def test_insert_right(self, test_class_at):
         test_class_at.insert(TimeRange("14:30 - 15:00"))
-        assert test_class_at.at_str == '12:00 - 13:00, 14:00 - 14:30'
+        result = str(test_class_at)
+        assert result == '12:00 - 13:00, 14:00 - 14:30'
 
     def test_insert_between(self, test_class_at):
         test_class_at.insert(TimeRange("12:30 - 12:40"))
-        assert test_class_at.at_str == '12:00 - 12:30, 12:40 - 13:00, 14:00 - 15:00'
+        result = str(test_class_at)
+        assert result == '12:00 - 12:30, 12:40 - 13:00, 14:00 - 15:00'
 
     def test_insert_error_case_no_at(self, test_class_at):
         test_class_at.at = []

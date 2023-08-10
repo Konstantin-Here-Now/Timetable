@@ -41,5 +41,4 @@ class TestTimeRange:
         assert str(err_info.value) == "End is the same as beginning!"
 
     def test_time_range_str_output(self, test_class_tr):
-        result = test_class_tr.time_range
-        assert result == EXAMPLE_TIME_RANGE
+        assert str(test_class_tr) == EXAMPLE_TIME_RANGE
