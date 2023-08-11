@@ -4,8 +4,12 @@ from main.models import AvailableTimeModel
 from main.business_logic.available_time import AvailableTime
 
 
-def set_default_time(at_data: dict[str, str] = settings.AVAILABLE_TIME) -> None:
+def set_default_time(at_data: dict[str, str] = settings.DEFAULT_AVAILABLE_TIME) -> None:
     AvailableTimeModel.objects.filter(time_type="default").update(**at_data)
+
+
+def reset_actual_at_to_default() -> None:
+    AvailableTimeModel.objects.filter(time_type="actual").update(**settings.DEFAULT_AVAILABLE_TIME)
 
 
 def set_day_available_time(day: str, available_time: AvailableTime) -> None:

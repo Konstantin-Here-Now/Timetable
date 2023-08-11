@@ -177,24 +177,3 @@ class LessonUpdateView(UpdateView):
     @method_decorator(permission_required('main.change_lesson'))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-# class LessonDeleteView(DeleteView):
-#     model = Lesson
-#
-#     def delete(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         success_url = self.get_success_url()
-#         user = request.user
-#         if user.is_staff or self.object.user == user:
-#             print('GOOD')
-#         else:
-#             print('BAD')
-#         # self.object.delete()
-#         return HttpResponseRedirect(success_url)
-#
-#     def get_success_url(self):
-#         user = self.request.user
-#         if user.is_staff:
-#             return reverse_lazy('lessons_list')
-#         elif not user.is_staff:
-#             return reverse_lazy('profile')

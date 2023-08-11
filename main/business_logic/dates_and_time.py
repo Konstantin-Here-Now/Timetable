@@ -7,6 +7,7 @@ from datetime import datetime, date, timedelta
 
 from django.conf import settings
 
+from main.business_logic.dates_controller import get_day_from_date
 from main.business_logic.time_range import TimeRange
 
 logger = logging.getLogger(__name__)

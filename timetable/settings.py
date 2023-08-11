@@ -162,7 +162,7 @@ with open(os.path.join(BASE_DIR, r'config.yaml'), 'r') as data_f:
     CONFIG = yaml.load(data_f, yaml.BaseLoader)
 
 CONTACTS = CONFIG["teacher_info"]
-AVAILABLE_TIME = CONFIG["default_available_time"]
+DEFAULT_AVAILABLE_TIME = CONFIG["default_available_time"]
 
 LESSON_SETTINGS = CONFIG["lesson_settings"]
 MIN_TIME_FOR_LESSON = int(LESSON_SETTINGS['min_time_for_lesson'])

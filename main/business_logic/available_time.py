@@ -19,14 +19,6 @@ class AvailableTime:
             return self.at == other.at
         return False
 
-    # @property
-    # def at_str(self) -> str:
-    #     if self.at:
-    #         list_of_at = [str(tr) for tr in self.at]
-    #         return ", ".join(list_of_at)
-    #     else:
-    #         return "---"
-
     @staticmethod
     def _to_list_of_time_ranges(available_time: str) -> list[TimeRange]:
         available_time_separated = list(map(str.strip, available_time.split(',')))

@@ -4,7 +4,20 @@ from main.business_logic.dates_controller import get_actual_dates
 from main.models import AvailableTimeModel
 
 
-def create_time_tables(at_data: dict[str, str] = settings.AVAILABLE_TIME) -> None:
+def create_time_tables(at_data: dict[str, str] = settings.Default_AVAILABLE_TIME, dates: dict[str, str] = None) -> None:
+    create_default_at_table(at_data)
+    create_actual_at_table(at_data)
+    create_dates_table(dates)
+
+
+def create_default_at_table(at_data: dict[str, str] = settings.Default_AVAILABLE_TIME) -> None:
     AvailableTimeModel.objects.create(time_type='default', **at_data)
+
+
+def create_actual_at_table(at_data: dict[str, str] = settings.Default_AVAILABLE_TIME) -> None:
     AvailableTimeModel.objects.create(time_type='actual', **at_data)
-    AvailableTimeModel.objects.create(time_type='dates', **get_actual_dates())
+
+
+def create_dates_table(dates: dict[str, str] = None) -> None:
+    dates = get_actual_dates() if dates is None else dates
+    AvailableTimeModel.objects.create(time_type='dates', **dates)
