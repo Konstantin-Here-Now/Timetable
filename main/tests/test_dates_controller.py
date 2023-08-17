@@ -4,18 +4,6 @@ import re
 from main.business_logic.dates_controller import get_actual_dates, update_dates, get_dates_from_db
 from main.db_connection import create_dates_table
 
-FAKE_TIME = datetime.datetime(year=2023, month=12, day=25, hour=17, minute=5, second=55)
-
-
-@pytest.fixture
-def patch_datetime_now(monkeypatch):
-    class MockDatetime:
-        @classmethod
-        def now(cls):
-            return FAKE_TIME
-
-    monkeypatch.setattr(datetime, 'datetime', MockDatetime)
-
 
 class TestGetActualDates:
     def test_should_be_no_today_date(self):
@@ -33,8 +21,10 @@ class TestGetActualDates:
         for one_date in dates.values():
             assert bool(re.search(r'\d{1,2}\.\d{2}', one_date))
 
-    def test_patch_datetime(self, patch_datetime_now):
+    @pytest.mark.freeze_time('2023-08-11')
+    def test_patch_datetime(self):
         result = get_actual_dates()
+        print(result)
         expected_dates_dict = {'friday': '18.08',
                                'monday': '14.08',
                                'saturday': '12.08',
@@ -64,5 +54,14 @@ class TestOperationsWithDB:
 
     @pytest.mark.django_db(transaction=True)
     def test_get_dates_from_db(self):
-        pass
-
+        mock_dates = {'friday': '18.08',
+                      'monday': '14.08',
+                      'saturday': '12.08',
+                      'sunday': '13.08',
+                      'thursday': '17.08',
+                      'tuesday': '15.08',
+                      'wednesday': '16.08'}
+        create_dates_table(mock_dates)
+        result = get_dates_from_db()
+        del result['time_type']
+        assert result == mock_dates

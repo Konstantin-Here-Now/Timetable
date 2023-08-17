@@ -25,9 +25,10 @@ def _is_correspond_to_default_at(day: str, tr: TimeRange) -> bool:
 
 def _is_already_occupied(day_date: datetime.date, tr: TimeRange) -> bool:
     lessons = Lesson.objects.filter(date_lesson=day_date)
-    for lesson in lessons:
-        time_lesson = TimeRange(f"{lesson['time_lesson_start']} - {lesson['time_lesson_end']}")
-        if time_lesson == tr:
-            return True
-    else:
-        return False
+    if lessons:
+        print(lessons)
+        for lesson in lessons:
+            time_lesson = TimeRange(f"{lesson.time_lesson_start} - {lesson.time_lesson_end}")
+            if time_lesson == tr:
+                return True
+    return False

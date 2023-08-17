@@ -6,7 +6,7 @@ TIME_RANGE_PATTERN = r'\d{2}:\d{2} - \d{2}:\d{2}'
 
 class TimeRange:
     def __init__(self, time_range: str | tuple[int, int]):
-        time_range_in_minutes = self._to_tuple_of_minutes(time_range) if isinstance(time_range, str) else time_range
+        time_range_in_minutes = self.to_tuple_of_minutes(time_range) if isinstance(time_range, str) else time_range
         proper_time_range = self._check_time_order(time_range_in_minutes)
 
         self.time_range_in_min: tuple[int, int] = proper_time_range
@@ -45,7 +45,7 @@ class TimeRange:
             raise ValueError("End is earlier beginning!")
 
     @staticmethod
-    def _to_tuple_of_minutes(time_range: TIME_RANGE_PATTERN) -> tuple[int, int] | ValueError:
+    def to_tuple_of_minutes(time_range: TIME_RANGE_PATTERN) -> tuple[int, int] | ValueError:
         try:
             time_range_separated = list(map(str.strip, time_range.split('-')))
             output_time_range = [0, 0]

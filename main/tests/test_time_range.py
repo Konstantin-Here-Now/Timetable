@@ -12,12 +12,12 @@ def test_class_tr():
 
 class TestTimeRange:
     def test_to_tuple_of_minutes_default(self, test_class_tr):
-        result = test_class_tr._to_tuple_of_minutes(EXAMPLE_TIME_RANGE)
+        result = test_class_tr.to_tuple_of_minutes(EXAMPLE_TIME_RANGE)
         assert result == (720, 1080)
 
     def test_to_tuple_of_minutes_error(self, test_class_tr):
         with pytest.raises(ValueError) as err_info:
-            test_class_tr._to_tuple_of_minutes("0:0 - 0:0")
+            test_class_tr.to_tuple_of_minutes("0:0 - 0:0")
         assert str(err_info.value) == "Time range should look like this: '00:00 - 00:00'"
 
     def test_check_time_order_default(self, test_class_tr):
