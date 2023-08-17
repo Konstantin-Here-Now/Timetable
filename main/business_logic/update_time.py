@@ -1,7 +1,7 @@
 import datetime
 
 from main.business_logic.available_time import AvailableTime
-from main.business_logic.available_time_controller import get_available_time, set_day_available_time, set_default_time, \
+from main.business_logic.available_time_controller import get_available_time, set_day_available_time, \
     reset_actual_at_to_default
 from main.business_logic.dates_controller import is_date_in_db, get_day_from_date, get_actual_dates, update_dates
 from main.business_logic.exceptions import AvailableTimeExceeded

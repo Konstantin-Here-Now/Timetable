@@ -2,7 +2,7 @@ import datetime
 import pytest
 import re
 from main.business_logic.dates_controller import get_actual_dates, update_dates, get_dates_from_db
-from main.db_connection import create_time_tables, create_dates_table
+from main.db_connection import create_dates_table
 
 FAKE_TIME = datetime.datetime(year=2023, month=12, day=25, hour=17, minute=5, second=55)
 

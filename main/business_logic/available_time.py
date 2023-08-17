@@ -2,7 +2,6 @@ from main.business_logic.exceptions import AvailableTimeExceeded
 from main.business_logic.time_range import TimeRange
 
 
-# TODO at_str replace with __str__
 class AvailableTime:
     def __init__(self, at: str):
         self.at: list[TimeRange] = self._to_list_of_time_ranges(at) if at != '---' else []
