@@ -1,0 +1,13 @@
+#!/bin/bash
+
+OS="$(uname)"
+if [ "$OS" = 'WindowsNT' ]; then
+  source venv/Scripts/activate
+else
+  source venv/bin/activate
+fi
+
+celery -A timetable worker -l info --logfile=celery.log --detach
+celery -A timetable beat -l info --logfile=celery.beat.log --detach
+
+exit 0
