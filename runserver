@@ -1,0 +1,18 @@
+#!/bin/bash
+
+OS="$(uname)"
+if [ "$OS" = 'WindowsNT' ]; then
+  source venv/Scripts/activate
+else
+  source venv/bin/activate
+fi
+
+./celery_beat_starter
+echo ""
+echo "Starting django server..."
+python manage.py runserver
+./celery_beat_ender
+
+echo "Everything shut down"
+
+exit 0

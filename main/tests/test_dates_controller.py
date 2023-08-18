@@ -21,10 +21,9 @@ class TestGetActualDates:
         for one_date in dates.values():
             assert bool(re.search(r'\d{1,2}\.\d{2}', one_date))
 
-    @pytest.mark.freeze_time('2023-08-11')
-    def test_patch_datetime(self):
+    def test_patch_datetime(self, freezer):
+        freezer.move_to('2023-08-11')
         result = get_actual_dates()
-        print(result)
         expected_dates_dict = {'friday': '18.08',
                                'monday': '14.08',
                                'saturday': '12.08',
