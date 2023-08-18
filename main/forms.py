@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from django import forms
 from django.core.exceptions import ValidationError
 
+from .business_logic.time_controller import is_time_available_globally
+from .business_logic.time_range import TimeRange
 from .models import Lesson
-from .dates_and_time import TODAY, time_range_to_min, is_time_available
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.contrib.auth.models import User
@@ -12,39 +15,45 @@ from django.conf import settings
 class LessonCreateForm(forms.ModelForm):
     class Meta:
         model = Lesson
-        # fields = ('date_lesson', 'time_lesson', 'desc')
-        fields = ('date_lesson', 'desc', 'time_lesson_start', 'time_lesson_end')
+        fields = ('desc', 'time_lesson_start', 'time_lesson_end', 'date_lesson')
         widgets = {
             'date_lesson': forms.TextInput(attrs={'class': 'form-input', 'type': 'date'}),
             'desc': forms.Textarea(
-                attrs={'class': 'form-input', 'placeholder': 'Предмет для занятий, дополнительные комментарии'}),
+                attrs={'class': 'form-input', 'cols': "30", 'rows': "10",
+                       'placeholder': 'Предмет для занятий, дополнительные комментарии'}),
             'time_lesson_start': forms.TimeInput(attrs={'class': 'form-input', 'placeholder': '12:00', 'type': 'time'}),
             'time_lesson_end': forms.TimeInput(attrs={'class': 'form-input', 'placeholder': '13:00', 'type': 'time'})
         }
 
-    def clean_time_lesson_end(self):
-        time_lesson_end = self.cleaned_data['time_lesson_end']
-        time_lesson = f"{self.cleaned_data['time_lesson_start']} - {time_lesson_end}"
-        time_lesson_range = time_range_to_min(time_lesson)
+    def clean(self):
+        cleaned_data = super().clean()
+        date_lesson = cleaned_data['date_lesson']
+        time_lesson_end = cleaned_data['time_lesson_end']
+        time_lesson_start = cleaned_data['time_lesson_start']
+        time_lesson = f"{time_lesson_start} - {time_lesson_end}"
+
+        # cleaning time_lesson
+        time_lesson_range = TimeRange.to_tuple_of_minutes(time_lesson)
         time_lesson_hours = time_lesson_range[1] - time_lesson_range[0]
-        if time_lesson_hours < 0:
-            raise ValidationError('Начало занятия позже, чем его конец')
+        if time_lesson_hours == 0:
+            raise ValidationError(f'Начало занятия совпадает с концом занятия')
+        if time_lesson_range[0] > time_lesson_range[1]:
+            raise ValidationError(f'Конец занятия раньше начала занятия')
         if time_lesson_hours > settings.MAX_TIME_FOR_LESSON:
             raise ValidationError(f'Максимальная продолжительность занятия - {settings.MAX_TIME_FOR_LESSON} минут')
         if time_lesson_hours < settings.MIN_TIME_FOR_LESSON:
             raise ValidationError(f'Минимальная продолжительность занятия - {settings.MIN_TIME_FOR_LESSON} минут')
 
-        date_lesson = self.cleaned_data['date_lesson']
-        if not is_time_available(day_date=date_lesson, time_range=time_lesson):
+        # cleaning date_lesson
+        today = datetime.today().date()
+        if date_lesson == today:
+            raise ValidationError(f'Для записи на сегодня обратитесь к учителю напрямую')
+        if date_lesson < today:
+            raise ValidationError(f'Пока машину времени не придумали, Вы не можете записаться на занятие в прошлом')
+        if not is_time_available_globally(day_date=date_lesson, tr=TimeRange(time_lesson)):
             raise ValidationError(f'Выбранное Вами время недоступно для записи')
 
-        return time_lesson_end
-
-    def clean_date_lesson(self):
-        date_lesson = self.cleaned_data['date_lesson']
-        if date_lesson < TODAY.date():
-            raise ValidationError(f'Пока машину времени не придумали, Вы не можете записаться на занятие в прошлом')
-        return date_lesson
+        return cleaned_data
 
 
 class LessonUpdateForm(LessonCreateForm):
@@ -90,4 +99,3 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
             msg = "Пользователь с таким электронным адресом отсутствует."
             self.add_error('email', msg)
         return email
-

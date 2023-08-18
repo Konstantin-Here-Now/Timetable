@@ -8,21 +8,19 @@
     <div class="container" style="width: 18vw; text-align: center">
         <form method="post">
             {% csrf_token %}
+            <p style="color: red">{{ form.non_field_errors.as_text }}</p>
+
             {{ form.date_lesson.label_tag }}
             {{ form.date_lesson }}
-            {{ form.date_lesson.errors }}
 
-            <br><br><br>
+            <br><br>
             <p>Время занятия</p>
             {{ form.time_lesson_start }} - {{ form.time_lesson_end }}
-            {% if form.time_lesson_end.errors or form.time_lesson_start.errors %}
-                {{ form.time_lesson_start.errors }}
-                {{ form.time_lesson_end.errors }}
-            {% endif %}
 
+            <br><br>
             {{ form.desc.label_tag }}
             {{ form.desc }}
-            {{ form.desc.errors }}
+            <br><br>
             <input type="submit" class="btn btn-primary" value="Записаться">
         </form>
     </div>

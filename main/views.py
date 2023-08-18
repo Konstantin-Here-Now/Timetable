@@ -1,5 +1,5 @@
-import json
 import logging
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
@@ -14,26 +14,25 @@ from django.core.mail import send_mail
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView
 
+from .business_logic.days_dataset import get_days_dataset
+from .business_logic.time_range import TimeRange
 from .models import Lesson
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
 
-from .dates_and_time import TODAY, DATES_JSON_PATH, update
+from main.business_logic.update_time import update
 
 logger = logging.getLogger(__name__)
 
-CONTACTS = settings.CONTACTS
-
 
 def index(request):
-    with open(DATES_JSON_PATH, 'r', encoding='UTF-8') as dates_f:
-        dates_data = json.loads(dates_f.read())
-    return render(request, 'main/index.html', context={'days_dataset': dates_data})
+    days_dataset = get_days_dataset()
+    return render(request, 'main/index.html', context={'days_dataset': days_dataset})
 
 
 def contacts(request):
-    context = CONTACTS
+    context = settings.CONTACTS
     return render(request, 'main/contacts.html', context)
 
 
@@ -82,7 +81,7 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 @login_required
 def profile(request):
     user = request.user
-    lessons = Lesson.objects.filter(user_id=user.id, date_lesson__gte=TODAY).order_by('date_lesson')
+    lessons = Lesson.objects.filter(user_id=user.id, date_lesson__gte=datetime.today()).order_by('date_lesson')
 
     paginator = Paginator(lessons, 3)
     pag_num = request.GET.get('page', 1)
@@ -142,7 +141,7 @@ class LessonListView(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        return Lesson.objects.filter(date_lesson__gte=TODAY).order_by('date_lesson')
+        return Lesson.objects.filter(date_lesson__gte=datetime.today()).order_by('date_lesson')
 
     @method_decorator(permission_required('main.view_lesson'))
     def dispatch(self, request, *args, **kwargs):
@@ -162,6 +161,7 @@ class LessonUpdateView(UpdateView):
         approved = 'APPROVED' if form.instance.approved is True else 'DISAPPROVED'
         logger.info(f'<<{approved}>> {pupil} {time_lesson} {date_lesson}')
         if approved == 'APPROVED':
+            update(date_lesson, TimeRange(time_lesson))
             send_mail(
                 subject='Ваше занятие одобрено',
                 message=f'Одобрено занятие {date_lesson} в промежуток {time_lesson}.',
@@ -172,30 +172,8 @@ class LessonUpdateView(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        update()
         return reverse_lazy('lessons_list')
 
     @method_decorator(permission_required('main.change_lesson'))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-# class LessonDeleteView(DeleteView):
-#     model = Lesson
-#
-#     def delete(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         success_url = self.get_success_url()
-#         user = request.user
-#         if user.is_staff or self.object.user == user:
-#             print('GOOD')
-#         else:
-#             print('BAD')
-#         # self.object.delete()
-#         return HttpResponseRedirect(success_url)
-#
-#     def get_success_url(self):
-#         user = self.request.user
-#         if user.is_staff:
-#             return reverse_lazy('lessons_list')
-#         elif not user.is_staff:
-#             return reverse_lazy('profile')

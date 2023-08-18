@@ -1,0 +1,16 @@
+#!/bin/bash
+
+OS="$(uname)"
+if [ "$OS" = 'WindowsNT' ]; then
+  source venv/Scripts/activate
+else
+  source venv/bin/activate
+fi
+
+echo "Starting celery worker..."
+celery -A timetable worker -l info --logfile=celery.log --detach
+echo "Starting celery beat..."
+celery -A timetable beat -l info --logfile=celery.beat.log --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach
+echo "Celery works!"
+
+exit 0

@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import json
 import os
 from pathlib import Path
+
+import yaml
 from dotenv import load_dotenv, find_dotenv
 
-# for local server
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_user_agents',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Europe/Moscow"
 TIME_INPUT_FORMATS = ('%H:%M',)
 
 USE_I18N = True
@@ -156,17 +159,27 @@ LOGGING = {
     },
 }
 
+# Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = "Europe/Moscow"
 
-# data for functions in view.py
-CONTACTS = {
-    'name': os.getenv('CONTACTS_NAME'),
-    'phone': os.getenv('CONTACTS_PHONE'),
-    'email': os.getenv('CONTACTS_EMAIL'),
-    'vk': os.getenv('CONTACTS_VK'),
-}
-MAX_TIME_FOR_LESSON = int(os.getenv('MAX_TIME_FOR_LESSON'))  # in minutes
-MIN_TIME_FOR_LESSON = int(os.getenv('MIN_TIME_FOR_LESSON'))  # in minutes
+# Manual Configuration Options
+with open(os.path.join(BASE_DIR, r'config.yaml'), 'r') as data_f:
+    CONFIG = yaml.load(data_f, yaml.BaseLoader)
 
+CONTACTS = CONFIG["teacher_info"]
+DEFAULT_AVAILABLE_TIME = CONFIG["default_available_time"]
+DAILY_UPDATE_HOUR = CONFIG["daily_update_hour"]
+
+LESSON_SETTINGS = CONFIG["lesson_settings"]
+MIN_TIME_FOR_LESSON = int(LESSON_SETTINGS['min_time_for_lesson'])
+MAX_TIME_FOR_LESSON = int(LESSON_SETTINGS['max_time_for_lesson'])
+
+# SMTP Email Configuration Options
 EMAIL_ADMIN = os.getenv('EMAIL_ADMIN')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
