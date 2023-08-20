@@ -168,12 +168,13 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Europe/Moscow"
 
 # Manual Configuration Options
-with open(os.path.join(BASE_DIR, r'config.yaml'), 'r') as data_f:
+with open(os.path.join(BASE_DIR, r'config.yaml'), 'r', encoding="utf-8") as data_f:
     CONFIG = yaml.load(data_f, yaml.BaseLoader)
 
 CONTACTS = CONFIG["teacher_info"]
 DEFAULT_AVAILABLE_TIME = CONFIG["default_available_time"]
 DAILY_UPDATE_HOUR = CONFIG["daily_update_hour"]
+FAQ = CONFIG["faq"]
 
 LESSON_SETTINGS = CONFIG["lesson_settings"]
 MIN_TIME_FOR_LESSON = int(LESSON_SETTINGS['min_time_for_lesson'])

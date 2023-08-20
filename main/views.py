@@ -28,12 +28,23 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     days_dataset = get_days_dataset()
-    return render(request, 'main/index.html', context={'days_dataset': days_dataset})
+    context = {'days_dataset': days_dataset}
+    return render(request, 'main/index.html', context)
 
 
 def contacts(request):
     context = settings.CONTACTS
     return render(request, 'main/contacts.html', context)
+
+
+def faq(request):
+    context = {'context': settings.FAQ}
+    return render(request, 'main/faq.html', context)
+
+
+def mail(request):
+    context = {}
+    return render(request, 'main/mail.html', context)
 
 
 def user_register(request):
