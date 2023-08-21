@@ -7,7 +7,6 @@ from main.models import AvailableTimeModel
 def get_actual_dates() -> dict[str, str]:
     dates = {}
     today = datetime.today()
-    print(today)
     tomorrow = today + timedelta(days=1)
     tomorrow_eng = tomorrow.strftime('%A').lower()
     tomorrow_date = list(map(int, tomorrow.strftime("%d.%m").split('.')))

@@ -8,6 +8,7 @@ def create_time_tables(at_data: dict[str, str] = settings.DEFAULT_AVAILABLE_TIME
     create_default_at_table(at_data)
     create_actual_at_table(at_data)
     create_dates_table(dates)
+    print("Basic time tables created.")
 
 
 def create_default_at_table(at_data: dict[str, str] = settings.DEFAULT_AVAILABLE_TIME) -> None:

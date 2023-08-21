@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "Configuring started..."
+mkdir "logs"
+
+pip install "setuptools<58.0.0"
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py collectstatic
+
+echo "Configuring ended. Please create basic tables and don't forget to create .env file before starting a program."
+
+
+exit 0
