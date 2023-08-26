@@ -10,11 +10,11 @@
             {% csrf_token %}
             <p style="color: red">{{ form.non_field_errors.as_text }}</p>
 
-            {{ form.date_lesson.label_tag }}
+            <p>{{ form.date_lesson.label_tag }}</p>
             {{ form.date_lesson }}
 
             <br><br>
-            <p>Время занятия</p>
+            <p>Время занятия:</p>
             {{ form.time_lesson_start }} - {{ form.time_lesson_end }}
 
             <br><br>

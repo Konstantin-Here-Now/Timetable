@@ -21,6 +21,8 @@ urlpatterns = [
              template_name='main/users/password_reset/password_reset_complete.html'), name='password_reset_complete'),
     # path('password_reset/', password_reset, name='password_reset'),
     path('profile/', profile, name='profile'),
+    path('faq/', faq, name='faq'),
+    path('mail/', mail, name='mail'),
 
     path('lessons_list/', LessonListView.as_view(), name='lessons_list'),
     path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update')
