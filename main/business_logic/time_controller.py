@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from main.business_logic.available_time import AvailableTime
 from main.business_logic.available_time_controller import get_available_time
@@ -7,8 +8,11 @@ from main.business_logic.exceptions import AvailableTimeExceeded
 from main.business_logic.time_range import TimeRange
 from main.models import Lesson
 
+logger = logging.getLogger(__name__)
+
 
 def is_time_available_globally(day_date: datetime.date, tr: TimeRange) -> bool:
+    logger.info("Checking whether time is available globally...")
     day_name = get_day_from_date(day_date)
     return _is_correspond_to_default_at(day_name, tr) and not _is_already_occupied(day_date, tr)
 
@@ -26,7 +30,6 @@ def _is_correspond_to_default_at(day: str, tr: TimeRange) -> bool:
 def _is_already_occupied(day_date: datetime.date, tr: TimeRange) -> bool:
     lessons = Lesson.objects.filter(date_lesson=day_date)
     if lessons:
-        print(lessons)
         for lesson in lessons:
             time_lesson = TimeRange(f"{lesson.time_lesson_start} - {lesson.time_lesson_end}")
             if time_lesson == tr:

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Starting celery worker..."
+celery -A timetable worker -l info --logfile=logs/celery.log --detach
+echo "Starting celery beat..."
+celery -A timetable beat -l info --logfile=logs/celery.beat.log --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach
+echo "Celery works!"
+
+exit 0
