@@ -6,20 +6,22 @@
 
 {% block content %}
     <h1 style="text-align: center">Frequently Asked Questions</h1>
-    <br><br>
+
+    {% if not request.user.is_anonymous %}
+        <br>
+        <div class="container" style="width: 36vw; text-align: center">
+            <a href="{% url 'mail' %}" style="text-align: center">
+                <button type="button" class="btn btn-primary">Форма обратной связи</button>
+            </a>
+        </div>
+    {% endif %}
+
+    <br>
     <div class="container" style="width: 36vw;">
         {% for question, answer in context.items %}
             <h3>{{ question }}?</h3>
             <p>{{ answer }}</p>
         {% endfor %}
     </div>
-    {% if not request.user.is_anonymous %}
-    <div class="container" style="width: 36vw; text-align: center">
-        <br>
-        <a href="{% url 'mail' %}" style="text-align: center">
-            <button type="button" class="btn btn-primary">Оставить отзыв/предложение</button>
-        </a>
-        <br><br><br>
-    </div>
-    {% endif %}
+    <br><br>
 {% endblock %}

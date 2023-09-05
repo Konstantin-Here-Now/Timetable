@@ -2,26 +2,22 @@ import logging
 from datetime import datetime
 
 from django.conf import settings
-from django.contrib.messages.views import SuccessMessageMixin
-
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import PasswordResetView
-
-from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
+from main.business_logic.update_time import update
 from .business_logic.days_dataset import get_days_dataset
 from .business_logic.time_range import TimeRange
+from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm, ContactForm
 from .models import Lesson
-from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm
-
-from main.business_logic.update_time import update
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +39,21 @@ def faq(request):
 
 
 def mail(request):
-    context = {}
-    return render(request, 'main/mail.html', context)
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                subject=form.cleaned_data['subject'],
+                message=form.cleaned_data['message'],
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_ADMIN],
+                fail_silently=False
+            )
+            logger.info("User has just sent mail to administrator.")
+        return redirect("index")
+
+    form = ContactForm()
+    return render(request, "main/mail.html", {'form': form})
 
 
 def user_register(request):

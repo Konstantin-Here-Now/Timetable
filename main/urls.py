@@ -19,7 +19,7 @@ urlpatterns = [
     path('password-reset-complete/',
          auth_views.PasswordResetCompleteView.as_view(
              template_name='main/users/password_reset/password_reset_complete.html'), name='password_reset_complete'),
-    # path('password_reset/', password_reset, name='password_reset'),
+
     path('profile/', profile, name='profile'),
     path('faq/', faq, name='faq'),
     path('mail/', mail, name='mail'),

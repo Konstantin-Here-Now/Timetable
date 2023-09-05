@@ -5,5 +5,14 @@
 {% endblock %}
 
 {% block content %}
-    Форма для обратной связи будет добавлена в новых версиях сайта...
-{% endblock %}
+    <div class="container" style="width: 36vw; text-align: center">
+        <form method="post">
+            {% csrf_token %}
+            <p>{{ form.subject }}</p>
+            <br><br>
+            {{ form.message }}
+            <br><br>
+            <p>После успешной отправки Вы будете переведены на стартовую страницу.</p>
+            <input type="submit" class="btn btn-primary" value="Отправить письмо">
+        </form>
+    </div>{% endblock %}

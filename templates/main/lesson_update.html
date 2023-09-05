@@ -5,19 +5,27 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="container" style="width: 18vw; text-align: center">
         <form method="post">
             {% csrf_token %}
-            {% for field in form %}
-                <p>
-                    {{ field.label_tag }}<br>
-                    {{ field }}
-                    {% for error in field.errors %}
-                        <p style="color: red">{{ error }}</p>
-                    {% endfor %}
-                </p>
-            {% endfor %}
-            <input type="submit" class="btn btn-primary" value="Обновить">
+            <p style="color: red">{{ form.non_field_errors.as_text }}</p>
+
+            <p>{{ form.date_lesson.label_tag }}</p>
+            {{ form.date_lesson }}
+
+            <br><br>
+            <p>Время занятия:</p>
+            {{ form.time_lesson_start }} - {{ form.time_lesson_end }}
+
+            <br><br>
+            {{ form.desc.label_tag }}
+            {{ form.desc }}
+            <br><br>
+            {{ form.approved.label_tag }}
+            {{ form.approved }}
+            <br><br>
+            <input type="submit" class="btn btn-primary" value="Записаться">
         </form>
     </div>
 {% endblock %}
