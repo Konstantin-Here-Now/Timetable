@@ -22,7 +22,9 @@ def set_default_time(at_data: dict[str, str] = CONFIGURED_AVAILABLE_TIME) -> Non
 
 def reset_actual_at_to_default() -> None:
     logger.info('Resetting to default available time...')
-    AvailableTimeModel.objects.filter(time_type="actual").update(**CONFIGURED_AVAILABLE_TIME)
+    default_available_time = get_available_time("default")
+    del default_available_time["time_type"]
+    AvailableTimeModel.objects.filter(time_type="actual").update(**default_available_time)
     logger.info('Available time has been reset to default.')
 
 

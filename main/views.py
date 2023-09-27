@@ -13,7 +13,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
-from main.business_logic.update_time import update
+from main.business_logic.update_time import update, daily_update
 from .business_logic.days_dataset import get_days_dataset
 from .business_logic.time_range import TimeRange
 from .forms import LessonCreateForm, LessonUpdateForm, UserRegistrationForm, UserLoginForm, ContactForm
@@ -28,14 +28,14 @@ def index(request):
     return render(request, 'main/index.html', context)
 
 
-def contacts(request):
-    context = settings.CONTACTS
-    return render(request, 'main/contacts.html', context)
-
-
 def faq(request):
     context = {'context': settings.FAQ}
     return render(request, 'main/faq.html', context)
+
+
+def update_time_manual(request):
+    daily_update()
+    return redirect('index')
 
 
 def mail(request):

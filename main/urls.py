@@ -6,7 +6,6 @@ from .forms import EmailValidationOnForgotPassword
 
 urlpatterns = [
     path('', index, name='index'),
-    path('contacts/', contacts, name='contacts'),
     path('enroll/', LessonCreateView.as_view(), name='enroll'),
 
     path('login/', user_login, name='login'),
@@ -25,6 +24,7 @@ urlpatterns = [
     path('mail/', mail, name='mail'),
 
     path('lessons_list/', LessonListView.as_view(), name='lessons_list'),
-    path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update')
+    path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update'),
 
+    path('update_time_manual/', update_time_manual, name='update_time_manual')
 ]
