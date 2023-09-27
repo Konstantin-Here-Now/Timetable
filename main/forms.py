@@ -99,3 +99,9 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
             msg = "Пользователь с таким электронным адресом отсутствует."
             self.add_error('email', msg)
         return email
+
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=150,
+                              widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Тема сообщения'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-input', 'placeholder': 'Текст сообщения'}))

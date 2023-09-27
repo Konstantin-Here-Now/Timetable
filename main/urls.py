@@ -6,7 +6,6 @@ from .forms import EmailValidationOnForgotPassword
 
 urlpatterns = [
     path('', index, name='index'),
-    path('contacts/', contacts, name='contacts'),
     path('enroll/', LessonCreateView.as_view(), name='enroll'),
 
     path('login/', user_login, name='login'),
@@ -19,12 +18,13 @@ urlpatterns = [
     path('password-reset-complete/',
          auth_views.PasswordResetCompleteView.as_view(
              template_name='main/users/password_reset/password_reset_complete.html'), name='password_reset_complete'),
-    # path('password_reset/', password_reset, name='password_reset'),
+
     path('profile/', profile, name='profile'),
     path('faq/', faq, name='faq'),
     path('mail/', mail, name='mail'),
 
     path('lessons_list/', LessonListView.as_view(), name='lessons_list'),
-    path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update')
+    path('lesson_update/<int:pk>/', LessonUpdateView.as_view(), name='lesson_update'),
 
+    path('update_time_manual/', update_time_manual, name='update_time_manual')
 ]
