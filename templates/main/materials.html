@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Полезные материалы
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center">Полезные материалы</h1>
+    <br>
+    <div class="container" style="width: 36vw;">
+        <ul style="font-size: 1.5rem">
+            <li><a href="{% url 'download' 'Методичка по тестированию статистических гипотез.pdf' %}">Методичка по
+                тестированию статистических гипотез</a></li>
+        </ul>
+    </div>
+    <br><br>
+{% endblock %}

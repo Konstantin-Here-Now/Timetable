@@ -128,6 +128,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 
+# Media files
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -171,7 +176,6 @@ CELERY_TIMEZONE = "Europe/Moscow"
 with open(os.path.join(BASE_DIR, r'config.yaml'), 'r', encoding="utf-8") as data_f:
     CONFIG = yaml.load(data_f, yaml.BaseLoader)
 
-CONTACTS = CONFIG["teacher_info"]
 DEFAULT_AVAILABLE_TIME = CONFIG["default_available_time"]
 DAILY_UPDATE_HOUR = CONFIG["daily_update_hour"]
 FAQ = CONFIG["faq"]

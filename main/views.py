@@ -1,3 +1,4 @@
+import os
 import logging
 from datetime import datetime
 
@@ -8,6 +9,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -31,6 +33,20 @@ def index(request):
 def faq(request):
     context = {'context': settings.FAQ}
     return render(request, 'main/faq.html', context)
+
+
+def materials(request):
+    context = {'context': None}
+    return render(request, 'main/materials.html', context)
+
+
+def download(request, path: str):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/pdf")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
 
 
 def update_time_manual(request):
