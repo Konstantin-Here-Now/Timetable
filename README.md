@@ -107,6 +107,9 @@ Parameters in `default_available_time` contain default time for every day. This 
 no one has enrolled in lesson. And daily update will reset time in timetable to this default settings.
 When you change this parameters, you need to do this in order to apply changes to database:
 
+In order to use "Useful materials" webpage, add folder `media` to the project and 
+add your files there.
+
 1. Activate Django shell.
 ```bash
 python manage.py shell

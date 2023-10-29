@@ -2,12 +2,7 @@
 daily_update_hour: 14
 lesson_settings: # in minutes
   min_time_for_lesson: 30
-  max_time_for_lesson: 60
-teacher_info:
-  name: "Name Surname"
-  phone: "+79999999999"
-  email: "email@gmail.com"
-  vk: "https://vk.com"
+  max_time_for_lesson: 90
 default_available_time:
   monday: "17:00 - 19:00"
   tuesday: "19:00 - 23:00"
