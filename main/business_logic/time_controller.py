@@ -35,3 +35,13 @@ def _is_already_occupied(day_date: datetime.date, tr: TimeRange) -> bool:
             if time_lesson == tr:
                 return True
     return False
+
+
+def is_user_already_requested_lesson(day_date: datetime.date, tr: TimeRange, user: str) -> bool:
+    user_lessons = Lesson.objects.filter(date_lesson=day_date, user=user)
+    if user_lessons:
+        for lesson in user_lessons:
+            time_lesson = TimeRange(f"{lesson.time_lesson_start} - {lesson.time_lesson_end}")
+            if time_lesson == tr:
+                return True
+    return False

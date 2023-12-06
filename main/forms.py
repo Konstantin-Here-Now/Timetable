@@ -2,8 +2,7 @@ from datetime import datetime
 
 from django import forms
 from django.core.exceptions import ValidationError
-
-from .business_logic.time_controller import is_time_available_globally
+from .business_logic.time_controller import is_time_available_globally, is_user_already_requested_lesson
 from .business_logic.time_range import TimeRange
 from .models import Lesson
 
@@ -24,6 +23,11 @@ class LessonCreateForm(forms.ModelForm):
             'time_lesson_start': forms.TimeInput(attrs={'class': 'form-input', 'placeholder': '12:00', 'type': 'time'}),
             'time_lesson_end': forms.TimeInput(attrs={'class': 'form-input', 'placeholder': '13:00', 'type': 'time'})
         }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request") # store value of request 
+        print(self.request.user) 
+        super().__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -52,6 +56,13 @@ class LessonCreateForm(forms.ModelForm):
             raise ValidationError(f'Пока машину времени не придумали, Вы не можете записаться на занятие в прошлом')
         if not is_time_available_globally(day_date=date_lesson, tr=TimeRange(time_lesson)):
             raise ValidationError(f'Выбранное Вами время недоступно для записи')
+        
+        # checking if lesson already exists
+        if hasattr(self, 'request'):
+            user = self.request.user
+            if is_user_already_requested_lesson(date_lesson, TimeRange(time_lesson), user):
+                raise ValidationError('Запись на выбраное время уже была создана Вами (возможно ошибка сервера), проверьте Ваш Профиль')
+
 
         return cleaned_data
 
