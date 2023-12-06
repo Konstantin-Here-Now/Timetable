@@ -22,7 +22,7 @@
                                     {% endif %}
                                     <h4 class="card-title text-primary">{{ lesson.date_lesson }}</h4>
                                     <h5>{{ lesson.time_lesson_start }} - {{ lesson.time_lesson_end }}</h5>
-                                    <p>{{ lesson.pupil.first_name }} {{ lesson.pupil.last_name }}</p>
+                                    <p>{{ lesson.user }}</p>
                                     <p>{{ lesson.desc }}</p>
                                     <div>
                                         <a href="{% url 'lesson_update' lesson.pk %}" class="btn btn-primary"
