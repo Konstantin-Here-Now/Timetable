@@ -1,4 +1,5 @@
 ---
+celery_enabled: false
 daily_update_hour: 14
 lesson_settings: # in minutes
   min_time_for_lesson: 30

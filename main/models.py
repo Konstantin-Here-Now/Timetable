@@ -1,4 +1,4 @@
-from typing import Union, Literal
+from typing import Literal
 
 from django.conf import settings
 from django.db import models

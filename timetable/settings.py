@@ -17,7 +17,6 @@ import yaml
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -164,14 +163,6 @@ LOGGING = {
     },
 }
 
-# Celery Configuration Options
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = "Europe/Moscow"
-
 # Manual Configuration Options
 with open(os.path.join(BASE_DIR, r'config.yaml'), 'r', encoding="utf-8") as data_f:
     CONFIG = yaml.load(data_f, yaml.BaseLoader)
@@ -192,3 +183,13 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# Celery Configuration Options
+CELERY_ENABLED = CONFIG["celery_enabled"]
+if CELERY_ENABLED:
+    CELERY_BROKER_URL = 'redis://localhost:6379'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+    CELERY_ACCEPT_CONTENT = ['application/json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TIMEZONE = "Europe/Moscow"
